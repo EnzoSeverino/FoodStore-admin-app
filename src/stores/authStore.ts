@@ -8,7 +8,7 @@ interface AuthState {
     error: string | null
     setError: (error: string | null) => void
     checkAuth: () => Promise<void>
-    login: (username: string, password: string) => Promise<void>
+    login: (email: string, password: string) => Promise<void>
     logout: () => Promise<void>
     clearSession: () => void
 }
@@ -34,10 +34,10 @@ export const useAuthStore = create<AuthState>((set) => ({
         }
     },
 
-    login: async (username, password) => {
+    login: async (email, password) => {
         const { requestLogin, requestMe } = await import('@/api/authApi')
         try {
-            await requestLogin(username, password)
+            await requestLogin(email, password)
             const user = await requestMe()
             set({ user, isAuthenticated: true, error: null })
         } catch (error) {
