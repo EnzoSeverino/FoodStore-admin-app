@@ -1,6 +1,7 @@
-import { Outlet, NavLink } from 'react-router-dom'
+import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-import { useNavigate } from 'react-router-dom'
+import { useAdminOrdersFeed } from '@/hooks/useAdminOrdersFeed'
+import { WsConnectionBadge } from '../WsConnectionBadge'
 
 type NavItem = { to: string; label: string; icon: string; roles: string[] }
 
@@ -10,6 +11,7 @@ const allNavItems: NavItem[] = [
   { to: '/ingredientes', label: 'Ingredientes', icon: '⚗', roles: ['ADMIN'] },
   { to: '/productos', label: 'Productos', icon: '▦', roles: ['ADMIN', 'STOCK'] },
   { to: '/pedidos', label: 'Pedidos', icon: '🗒', roles: ['ADMIN', 'PEDIDOS'] },
+  { to: '/stock', label: 'Stock', icon: '🗒', roles: ['ADMIN', 'STOCK'] },
   { to: '/usuarios', label: 'Usuarios', icon: '👤', roles: ['ADMIN'] },
 ]
 
@@ -17,6 +19,8 @@ export function AppLayout() {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
   const navigate = useNavigate()
+
+  useAdminOrdersFeed()
 
   const handleLogout = async () => {
     await logout()
@@ -30,7 +34,7 @@ export function AppLayout() {
         {/* Logo */}
         <div className="px-6 py-5 border-b border-slate-100">
           <h1 className="text-lg font-bold text-slate-900">FoodStore</h1>
-          <p className="text-xs text-slate-400 mt-0.5">{user?.rol ?? 'Admin'}</p>
+          <p className="text-xs text-slate-400 mt-0.5">{user?.roles ?? 'Admin'}</p>
         </div>
 
         {/* Nav */}
@@ -62,7 +66,7 @@ export function AppLayout() {
               {user?.nombre?.charAt(0).toUpperCase() ?? 'A'}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-slate-900 truncate">{user?.nombre}</p>
+              <p className="text-sm font-medium text-slate-900 truncate">{user?.nombre} {user?.apellido}</p>
               <p className="text-xs text-slate-400 truncate">{user?.email}</p>
             </div>
           </div>
@@ -88,6 +92,8 @@ export function AppLayout() {
             />
           </div>
           <div className="flex items-center gap-3">
+            {/* Badge de conexión WebSocket */}
+            <WsConnectionBadge />
             <button className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100">
               🔔
             </button>

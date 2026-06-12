@@ -9,6 +9,8 @@ import { CategoriasPage } from "@/modules/categorias/pages/CategoriasPage";
 import { IngredientesPage } from "@/modules/ingredientes/pages/IngredientesPage";
 import { ProductosPage } from "@/modules/productos/pages/ProductosPage";
 import { PedidosPage } from "@/modules/pedidos/pages/PedidosPage";
+import { PedidoDetallePage } from "@/modules/pedidos/pages/PedidoDetallePage";
+import { StockPage } from "@/modules/stock/pages/StockPage";
 import { UsuariosPage } from "@/modules/usuarios/pages/UsuariosPage";
 
 const router = createBrowserRouter([
@@ -71,6 +73,22 @@ const router = createBrowserRouter([
                 element: (
                     <PrivateRoute requiredRole={['ADMIN', 'PEDIDOS']}>
                         <PedidosPage />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: 'pedidos/:id',
+                element: (
+                    <PrivateRoute requiredRole={['ADMIN', 'PEDIDOS']}>
+                        <PedidoDetallePage />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: 'stock',
+                element: (
+                    <PrivateRoute requiredRole={['ADMIN', 'STOCK']}>
+                        <StockPage />
                     </PrivateRoute>
                 ),
             },
