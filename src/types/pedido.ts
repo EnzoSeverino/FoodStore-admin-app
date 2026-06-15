@@ -26,7 +26,7 @@ export interface DetallePedidoRead {
     precio_snapshot: number
     cantidad: number
     subtotal_snap: number
-    personalización: number[] | null
+    personalizacion: number[] | null
 }
 
 // ─── Historial de Estados
