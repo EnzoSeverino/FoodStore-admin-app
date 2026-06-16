@@ -121,14 +121,14 @@ export function useWebSocket({
 
         connect()
 
-            // ─── Cleanup 
-            return () => {
-                cancelled = true
-                if (retryTimer !== null) clearTimeout(retryTimer)
-                if (currentWs) closeCleanly(currentWs)
-                wsRef.current = null
-                reset()
-            }
+        // ─── Cleanup 
+        return () => {
+            cancelled = true
+            if (retryTimer !== null) clearTimeout(retryTimer)
+            if (currentWs) closeCleanly(currentWs)
+            wsRef.current = null
+            reset()
+        }
     }, [enabled, setStatus, incrementRetry, resetRetry, reset])
 
     // ─── subscribeToOrder ───────────────────────────────────────────────────

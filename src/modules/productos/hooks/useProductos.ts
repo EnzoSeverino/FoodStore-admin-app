@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getUnidadesMedida } from "@/api/unidadesMedidaApi";
 import { 
     getProductos,
     getAllProductos,
@@ -10,6 +11,7 @@ import {
     updateImagenes,
 } from "@/api/productosApi";
 import { uploadImage, deleteImagen } from "@/api/uploadsApi";
+import type { UnidadMedida } from "@/types/producto";
 import type { Producto, ProductoCreate, ProductoUpdate, ImagenProductoUpdate } from "@/types/producto";
 import type { PaginatedResponse } from "@/types/api";
 
@@ -114,5 +116,13 @@ export function useUploadImage() {
 export function useDeleteImage() {
     return useMutation({
         mutationFn: (publicId: string) => deleteImagen(publicId),
+    })
+}
+
+export function useUnidadesMedida() {
+    return useQuery<UnidadMedida[]>({
+        queryKey: ['unidades-medida'],
+        queryFn: getUnidadesMedida,
+        staleTime: 10 * 60 * 1000,
     })
 }
