@@ -16,7 +16,7 @@ let isRefreshing = false
 let failedQueue: Array<{
     resolve: (value: unknown) => void
     reject: (reason: unknown) => void
-}>
+}> = []
 
 // Procesa la cola de requests pendientes después del refresh
 function processQueue(error: AxiosError | null) {

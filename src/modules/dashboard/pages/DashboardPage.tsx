@@ -7,6 +7,20 @@ import { ProductosTopChart } from "../components/ProductosTopChart";
 export function DashboardPage() {
   const user = useAuthStore((s) => s.user);
 
+  const hasAccess =
+    user?.roles?.some((r) => ["ADMIN", "STOCK", "PEDIDOS"].includes(r)) ??
+    false;
+
+  if (!hasAccess) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <p className="text-slate-500">
+          No tenés permisos para ver el dashboard
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header con saludo al usuario */}

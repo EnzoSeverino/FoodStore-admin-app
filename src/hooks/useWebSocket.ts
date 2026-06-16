@@ -74,7 +74,7 @@ export function useWebSocket({
             ws.onopen = () => {
                 if (cancelled) {
                     ws.close(1000)
-                return
+                    return
                 }
                 retryCount = 0
                 resetRetry()
@@ -116,19 +116,19 @@ export function useWebSocket({
                     `[WS] Reconectando en ${delay / 1000}s (intento ${retryCount})`,
                 )
                 retryTimer = setTimeout(connect, delay)
-                }
+            }
         }
 
         connect()
 
-        // ─── Cleanup 
-        return () => {
-            cancelled = true
-            if (retryTimer !== null) clearTimeout(retryTimer)
-            if (currentWs) closeCleanly(currentWs)
-            wsRef.current = null
-            reset()
-        }
+            // ─── Cleanup 
+            return () => {
+                cancelled = true
+                if (retryTimer !== null) clearTimeout(retryTimer)
+                if (currentWs) closeCleanly(currentWs)
+                wsRef.current = null
+                reset()
+            }
     }, [enabled, setStatus, incrementRetry, resetRetry, reset])
 
     // ─── subscribeToOrder ───────────────────────────────────────────────────
