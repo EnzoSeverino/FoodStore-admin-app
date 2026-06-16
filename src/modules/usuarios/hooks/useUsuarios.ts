@@ -4,16 +4,17 @@ import {
     createUsuario,
     updateUsuario,
     deleteUsuario,
-    type UsuarioCreate,
-    type UsuarioUpdate,
 } from "@/api/usuariosApi";
+import type { Usuario, UsuarioCreate, UsuarioUpdate } from "@/types/usuario";
+import type { PaginatedResponse } from "@/types/api";
 
-const QUERY_KEY = ['usuarios']
+const USUARIOS_KEY = ['usuarios'] as const
 
-export function useUsuarios(skip = 0, limit = 20) {
-  return useQuery({
-    queryKey: [...QUERY_KEY, { skip, limit }],
-    queryFn: () => getUsuarios(skip, limit),
+export function useUsuarios(page = 1, size = 20) {
+  return useQuery<PaginatedResponse<Usuario>>({
+    queryKey: [...USUARIOS_KEY, page, size],
+    queryFn: () => getUsuarios(page, size),
+    staleTime: 2 * 60 * 1000, // 2 minutos
   })
 }
 
@@ -22,7 +23,7 @@ export function useCreateUsuario() {
   return useMutation({
     mutationFn: (data: UsuarioCreate) => createUsuario(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+      queryClient.invalidateQueries({ queryKey: USUARIOS_KEY })
     },
   })
 }
@@ -33,7 +34,7 @@ export function useUpdateUsuario() {
     mutationFn: ({ id, data }: { id: number; data: UsuarioUpdate }) =>
       updateUsuario(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+      queryClient.invalidateQueries({ queryKey: USUARIOS_KEY })
     },
   })
 }
@@ -43,7 +44,7 @@ export function useDeleteUsuario() {
   return useMutation({
     mutationFn: (id: number) => deleteUsuario(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+      queryClient.invalidateQueries({ queryKey: USUARIOS_KEY })
     },
   })
 }
