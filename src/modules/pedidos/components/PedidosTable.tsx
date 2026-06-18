@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useReactTable,
@@ -11,122 +12,129 @@ import { EstadoActions } from "./EstadoActions";
 
 interface PedidosTableProps {
   data: PedidoRead[];
-  onCancelarClick: (pedido: PedidoRead) => void;
+  onCancelarClick: (pedido: PedidoRead, estadoId: number) => void;
 }
+
+const estadoVariant: Record<
+  string,
+  "warning" | "info" | "success" | "danger" | "default"
+> = {
+  PENDIENTE: "warning",
+  CONFIRMADO: "info",
+  EN_PREP: "warning",
+  ENTREGADO: "success",
+  CANCELADO: "danger",
+};
+
+const estadoLabels: Record<string, string> = {
+  PENDIENTE: "Pendiente",
+  CONFIRMADO: "Confirmado",
+  EN_PREP: "En Preparación",
+  ENTREGADO: "Entregado",
+  CANCELADO: "Cancelado",
+};
 
 const columnHelper = createColumnHelper<PedidoRead>();
 
 export function PedidosTable({ data, onCancelarClick }: PedidosTableProps) {
   const navigate = useNavigate();
 
-  const columns = [
-    columnHelper.accessor("id", {
-      header: "ID",
-      cell: (info) => (
-        <button
-          onClick={() => navigate(`/pedidos/${info.getValue()}`)}
-          className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline"
-        >
-          #{info.getValue()}
-        </button>
-      ),
-    }),
-    columnHelper.accessor("usuario_id", {
-      header: "Cliente",
-      cell: (info) => (
-        <span className="text-sm text-slate-700">
-          Usuario #{info.getValue()}
-        </span>
-      ),
-    }),
-    columnHelper.accessor("estado_codigo", {
-      header: "Estado",
-      cell: (info) => {
-        const estadoVariant: Record<
-          string,
-          "warning" | "info" | "success" | "danger" | "default"
-        > = {
-          PENDIENTE: "warning",
-          CONFIRMADO: "info",
-          EN_PREP: "warning",
-          ENTREGADO: "success",
-          CANCELADO: "danger",
-        };
-        const estadoLabels: Record<string, string> = {
-          PENDIENTE: "Pendiente",
-          CONFIRMADO: "Confirmado",
-          EN_PREP: "En Preparación",
-          ENTREGADO: "Entregado",
-          CANCELADO: "Cancelado",
-        };
-        return (
-          <Badge variant={estadoVariant[info.getValue()] ?? "default"}>
-            {estadoLabels[info.getValue()] ?? info.getValue()}
-          </Badge>
-        );
-      },
-    }),
-    columnHelper.accessor("subtotal", {
-      header: "Subtotal",
-      cell: (info) => (
-        <span className="text-sm text-slate-600">
-          ${info.getValue().toFixed(2)}
-        </span>
-      ),
-    }),
-    columnHelper.accessor("descuento", {
-      header: "Descuento",
-      cell: (info) => {
-        const descuento = info.getValue();
-        if (descuento === 0) return <span className="text-slate-400">—</span>;
-        return (
-          <span className="text-sm text-green-600">
-            -${descuento.toFixed(2)}
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("id", {
+        header: "ID",
+        cell: (info) => (
+          <button
+            onClick={() => navigate(`/pedidos/${info.getValue()}`)}
+            className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline"
+          >
+            #{info.getValue()}
+          </button>
+        ),
+      }),
+      columnHelper.accessor("usuario_id", {
+        header: "Cliente",
+        cell: (info) => (
+          <span className="text-sm text-slate-700">
+            Usuario #{info.getValue()}
           </span>
-        );
-      },
-    }),
-    columnHelper.accessor("costo_envio", {
-      header: "Envío",
-      cell: (info) => (
-        <span className="text-sm text-slate-600">
-          ${info.getValue().toFixed(2)}
-        </span>
-      ),
-    }),
-    columnHelper.accessor("total", {
-      header: "Total",
-      cell: (info) => (
-        <span className="font-semibold text-slate-900">
-          ${info.getValue().toFixed(2)}
-        </span>
-      ),
-    }),
-    columnHelper.accessor("created_at", {
-      header: "Fecha",
-      cell: (info) => (
-        <span className="text-sm text-slate-500">
-          {new Date(info.getValue()).toLocaleString("es-AR", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </span>
-      ),
-    }),
-    columnHelper.display({
-      id: "acciones",
-      header: "Acciones",
-      cell: (info) => (
-        <EstadoActions
-          pedido={info.row.original}
-          onCancelarClick={onCancelarClick}
-        />
-      ),
-    }),
-  ];
+        ),
+      }),
+      columnHelper.accessor("estado_actual", {
+        header: "Estado",
+        cell: (info) => {
+          const estado = info.getValue();
+          const codigo = estado?.codigo ?? "PENDIENTE";
+          return (
+            <Badge variant={estadoVariant[codigo] ?? "default"}>
+              {estadoLabels[codigo] ?? codigo}
+            </Badge>
+          );
+        },
+      }),
+      columnHelper.accessor("subtotal", {
+        header: "Subtotal",
+        cell: (info) => (
+          <span className="text-sm text-slate-600">
+            ${info.getValue().toFixed(2)}
+          </span>
+        ),
+      }),
+      columnHelper.accessor("descuento", {
+        header: "Descuento",
+        cell: (info) => {
+          const descuento = info.getValue();
+          if (descuento === 0) return <span className="text-slate-400">—</span>;
+          return (
+            <span className="text-sm text-green-600">
+              -${descuento.toFixed(2)}
+            </span>
+          );
+        },
+      }),
+      columnHelper.accessor("costo_envio", {
+        header: "Envío",
+        cell: (info) => (
+          <span className="text-sm text-slate-600">
+            ${info.getValue().toFixed(2)}
+          </span>
+        ),
+      }),
+      columnHelper.accessor("total", {
+        header: "Total",
+        cell: (info) => (
+          <span className="font-semibold text-slate-900">
+            ${info.getValue().toFixed(2)}
+          </span>
+        ),
+      }),
+      columnHelper.accessor("fecha_pedido", {
+        header: "Fecha",
+        cell: (info) => (
+          <span className="text-sm text-slate-500">
+            {new Date(info.getValue()).toLocaleString("es-AR", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        ),
+      }),
+      columnHelper.display({
+        id: "acciones",
+        header: "Acciones",
+        cell: (info) => (
+          <EstadoActions
+            pedido={info.row.original}
+            onCancelarClick={onCancelarClick}
+          />
+        ),
+      }),
+    ],
+    [navigate, onCancelarClick],
+  );
 
   const table = useReactTable({
     data,

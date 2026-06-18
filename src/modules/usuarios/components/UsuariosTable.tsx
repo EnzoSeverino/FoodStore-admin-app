@@ -4,7 +4,7 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
-import type { Usuario, CodigoRol } from "@/types/usuario";
+import type { Usuario } from "@/types/usuario";
 import { Badge } from "@/components/ui/Badge";
 
 interface UsuariosTableProps {
@@ -16,13 +16,15 @@ interface UsuariosTableProps {
 const columnHelper = createColumnHelper<Usuario>();
 
 // ─── Configuración de badges por rol ────────────────────────────────────────
-const rolVariant: Record<CodigoRol, "danger" | "warning" | "info" | "success"> =
-  {
-    ADMIN: "danger",
-    STOCK: "warning",
-    PEDIDOS: "info",
-    CLIENT: "success",
-  };
+const rolVariant: Record<
+  string,
+  "danger" | "warning" | "info" | "success" | "default"
+> = {
+  ADMIN: "danger",
+  STOCK: "warning",
+  PEDIDOS: "info",
+  CLIENT: "default",
+};
 
 export function UsuariosTable({ data, onEdit, onDelete }: UsuariosTableProps) {
   const columns = [
@@ -36,9 +38,7 @@ export function UsuariosTable({ data, onEdit, onDelete }: UsuariosTableProps) {
       header: "Nombre",
       cell: (info) => (
         <div>
-          <p className="font-medium text-slate-900">
-            {info.getValue()} {info.row.original.apellido}
-          </p>
+          <p className="font-medium text-slate-900">{info.getValue()}</p>
         </div>
       ),
     }),
@@ -48,37 +48,23 @@ export function UsuariosTable({ data, onEdit, onDelete }: UsuariosTableProps) {
         <span className="text-sm text-slate-700">{info.getValue()}</span>
       ),
     }),
-    columnHelper.accessor("celular", {
-      header: "Celular",
+    columnHelper.accessor("rol", {
+      header: "Rol",
       cell: (info) => {
-        const celular = info.getValue();
-        return <span className="text-sm text-slate-600">{celular ?? "—"}</span>;
-      },
-    }),
-    columnHelper.accessor("roles", {
-      header: "Roles",
-      cell: (info) => {
-        const roles = info.getValue();
-        if (!roles || roles.length === 0) return "—";
-        return (
-          <div className="flex flex-wrap gap-1">
-            {roles.map((r) => (
-              <Badge key={r.rol_codigo} variant={rolVariant[r.rol_codigo]}>
-                {r.rol_codigo}
-              </Badge>
-            ))}
-          </div>
-        );
+        const rol = info.getValue() as string;
+        if (!rol) return <span className="text-slate-400">—</span>;
+        return <Badge variant={rolVariant[rol] ?? "default"}>{rol}</Badge>;
       },
     }),
     columnHelper.accessor("deleted_at", {
       header: "Estado",
-      cell: (info) =>
-        info.getValue() === null ? (
+      cell: (info) => {
+        return info.getValue() === null ? (
           <Badge variant="success">Activo</Badge>
         ) : (
           <Badge variant="danger">Inactivo</Badge>
-        ),
+        );
+      },
     }),
     columnHelper.display({
       id: "acciones",

@@ -14,6 +14,8 @@ import { SkeletonTable } from "@/components/ui/SkeletonLoader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useToast } from "@/components/ui/Toast";
+import { hasRole } from "@/lib/roles";
+import { useDebounce } from "@/hooks/useDebounce";
 import type {
   Producto,
   ProductoCreate,
@@ -22,8 +24,8 @@ import type {
 
 export function ProductosPage() {
   const user = useAuthStore((s) => s.user);
-  const isAdmin = user?.roles.includes("ADMIN") ?? false;
-  const isStock = user?.roles.includes("ADMIN") ?? false;
+  const isAdmin = hasRole(user, "ADMIN");
+  const isStock = hasRole(user, "STOCK");
   const toast = useToast();
 
   // ─── Paginación ─────────────────────────────────────────────────────────
@@ -38,6 +40,7 @@ export function ProductosPage() {
     undefined,
   );
   const [busqueda, setBusqueda] = useState("");
+  const busquedaDebounced = useDebounce(busqueda, 400);
 
   // ─── Queries ────────────────────────────────────────────────────────────
   const {
@@ -49,7 +52,7 @@ export function ProductosPage() {
     size: pageSize,
     categoria: filtroCategoria,
     disponible: filtroDisponible,
-    search: busqueda || undefined,
+    search: busquedaDebounced || undefined,
   });
   const { data: categorias = [] } = useAllCategorias();
 

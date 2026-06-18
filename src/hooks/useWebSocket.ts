@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { useWsStore } from '@/stores/wsStore'
+import { useAuthStore } from '@/stores/authStore'
 
 // ─── URL base del WebSocket 
 function getWsUrl(): string {
@@ -39,9 +40,13 @@ export function useWebSocket({
     const incrementRetry = useWsStore((s) => s.incrementRetry)
     const resetRetry = useWsStore((s) => s.resetRetry)
     const reset = useWsStore((s) => s.reset)
+    const accessToken = useAuthStore((s) => s.accessToken)
 
     useEffect(() => {
         if (!enabled) return
+
+        const token = accessToken
+        if (!token) { setStatus('disconnected'); return }
 
         let cancelled = false
         let retryCount = 0
@@ -63,7 +68,7 @@ export function useWebSocket({
 
             // La cookie httpOnly viaja automáticamente en el handshake HTTP → WS.
             // No hace falta pasar el token manualmente.
-            const url = getWsUrl()
+            const url = `${getWsUrl()}?token=${encodeURIComponent(token)}`
 
             const ws = new WebSocket(url)
             currentWs = ws
@@ -129,7 +134,7 @@ export function useWebSocket({
             wsRef.current = null
             reset()
         }
-    }, [enabled, setStatus, incrementRetry, resetRetry, reset])
+    }, [enabled, accessToken, setStatus, incrementRetry, resetRetry, reset])
 
     // ─── subscribeToOrder ───────────────────────────────────────────────────
     const subscribeToOrder = useCallback((orderId: number) => {

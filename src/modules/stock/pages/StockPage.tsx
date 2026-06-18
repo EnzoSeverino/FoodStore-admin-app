@@ -8,11 +8,13 @@ import { StockTable } from "../components/StockTable";
 import { SkeletonTable } from "@/components/ui/SkeletonLoader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useToast } from "@/components/ui/Toast";
+import { hasRole } from "@/lib/roles";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export function StockPage() {
   const user = useAuthStore((s) => s.user);
-  const isAdmin = user?.roles.includes("ADMIN") ?? false;
-  const isStock = user?.roles.includes("STOCK") ?? false;
+  const isAdmin = hasRole(user, "ADMIN");
+  const isStock = hasRole(user, "STOCK");
   const toast = useToast();
 
   // ─── Paginación ─────────────────────────────────────────────────────────
@@ -24,6 +26,7 @@ export function StockPage() {
     undefined,
   );
   const [busqueda, setBusqueda] = useState("");
+  const busquedaDebounced = useDebounce(busqueda, 400);
 
   // ─── Queries ────────────────────────────────────────────────────────────
   const {
@@ -34,7 +37,7 @@ export function StockPage() {
     page,
     size: pageSize,
     disponible: filtroDisponible,
-    search: busqueda || undefined,
+    search: busquedaDebounced || undefined,
   });
 
   // ─── Mutations ──────────────────────────────────────────────────────────

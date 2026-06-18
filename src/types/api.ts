@@ -5,19 +5,25 @@ export interface LoginRequest {
 }
 
 export interface TokenResponse {
-    access_token: string
-    refresh_token: string
-    token_type: string
-    expires_in: number
+  access_token: string
+  refresh_token: string
+  usuario: {
+    id: number
+    email: string
+    nombre: string
+    apellido: string | null
+    celular: string | null
+    rol: string       // campo único, no array
+  }
 }
 
 export interface UserPublic {
     id: number
     nombre: string
-    apellido: string
+    apellido: string | null
     email: string
-    roles: string[]
-    created_at: string
+    rol: string
+    celular: string | null
 }
 
 // Error estándar RFC 7807 que devuelve FastAPI

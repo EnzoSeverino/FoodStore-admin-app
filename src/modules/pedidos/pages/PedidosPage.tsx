@@ -6,6 +6,7 @@ import { CancelarModal } from "../components/CancelarModal";
 import { SkeletonTable } from "@/components/ui/SkeletonLoader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import type { PedidoRead, CodigoEstado } from "@/types/pedido";
+import { hasRole } from "@/lib/roles";
 
 const estadoOptions: { value: CodigoEstado | ""; label: string }[] = [
   { value: "", label: "Todos" },
@@ -18,8 +19,8 @@ const estadoOptions: { value: CodigoEstado | ""; label: string }[] = [
 
 export function PedidosPage() {
   const user = useAuthStore((s) => s.user);
-  const isAdmin = user?.roles.includes("ADMIN") ?? false;
-  const isPedidos = user?.roles.includes("PEDIDOS") ?? false;
+  const isAdmin = hasRole(user, "ADMIN");
+  const isPedidos = hasRole(user, "PEDIDOS");
 
   // ─── Paginación ─────────────────────────────────────────────────────────
   const [page, setPage] = useState(1);
@@ -45,6 +46,7 @@ export function PedidosPage() {
   const [pedidoACancelar, setPedidoACancelar] = useState<PedidoRead | null>(
     null,
   );
+  const [canceladoEstadoId, setCanceladoEstadoId] = useState<number>(0);
 
   // ─── Handler de filtro ──────────────────────────────────────────────────
   const handleFiltroEstado = (value: string) => {
@@ -53,12 +55,14 @@ export function PedidosPage() {
   };
 
   // ─── Handler de cancelación ─────────────────────────────────────────────
-  const handleCancelarClick = (pedido: PedidoRead) => {
+  const handleCancelarClick = (pedido: PedidoRead, estadoId: number) => {
     setPedidoACancelar(pedido);
+    setCanceladoEstadoId(estadoId);
   };
 
   const handleCancelarClose = () => {
     setPedidoACancelar(null);
+    setCanceladoEstadoId(0);
   };
 
   // ─── Loading state ──────────────────────────────────────────────────────
@@ -201,6 +205,7 @@ export function PedidosPage() {
         pedido={pedidoACancelar}
         isOpen={pedidoACancelar !== null}
         onClose={handleCancelarClose}
+        canceladoEstadoId={canceladoEstadoId}
       />
     </div>
   );

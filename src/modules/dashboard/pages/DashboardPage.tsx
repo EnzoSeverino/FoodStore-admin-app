@@ -3,13 +3,12 @@ import { StatsCards } from "../components/StatsCards";
 import { PedidosPorEstadoChart } from "../components/PedidosPorEstadoCharts";
 import { VentasPorPeriodoChart } from "../components/VentasPorPeriodoChart";
 import { ProductosTopChart } from "../components/ProductosTopChart";
+import { hasRole } from "@/lib/roles";
 
 export function DashboardPage() {
   const user = useAuthStore((s) => s.user);
 
-  const hasAccess =
-    user?.roles?.some((r) => ["ADMIN", "STOCK", "PEDIDOS"].includes(r)) ??
-    false;
+  const hasAccess = hasRole(user, "ADMIN", "STOCK", "PEDIDOS");
 
   if (!hasAccess) {
     return (

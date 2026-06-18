@@ -9,15 +9,24 @@ export async function getIngredientes(
     page = 1,
     size = 20,
 ): Promise<PaginatedResponse<Ingrediente>> {
-    const response = await apiClient.get<PaginatedResponse<Ingrediente>>(INGREDIENTES, {
-        params: { page, size },
+    const response = await apiClient.get<Ingrediente[]>(INGREDIENTES, {
+        params: { skip: (page - 1) * size, limit: size },
     })
-    return response.data
+
+    const items = response.data
+
+    return {
+        items,
+        total: items.length,
+        page,
+        size,
+        pages: Math.ceil(items.length / size) || 1,
+    }
 }
 
 // ─── GET /api/v1/ingredientes/all
 export async function getAllIngredientes(): Promise<Ingrediente[]> {
-    const response = await apiClient.get<Ingrediente[]>(`${INGREDIENTES}/all`)
+    const response = await apiClient.get<Ingrediente[]>(`${INGREDIENTES}`)
     return response.data
 }
 

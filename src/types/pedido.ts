@@ -7,9 +7,10 @@ export type CodigoEstado =
     | 'CANCELADO'
 
 export interface EstadoPedido {
+  id: number
     codigo: CodigoEstado
-    descripcion: string
-    order: number
+    nombre: string
+    orden: number
     es_terminal: boolean
 }
 
@@ -19,24 +20,29 @@ export interface FormaPago {
     nombre: string
 }
 
-// ─── Detalle del Pedido (Snapshot Pattern) 
+// ─── Detalle del Pedido
 export interface DetallePedidoRead {
-    producto_id: number
-    nombre_snapshot: string
-    precio_snapshot: number
-    cantidad: number
-    subtotal_snap: number
-    personalizacion: number[] | null
+  id: number
+  producto_id: number
+  nombre_producto: string        
+  precio_unitario: number       
+  cantidad: number
+  subtotal: number
+  subtotal_snap: number
+  personalizacion: number[] | null
 }
 
 // ─── Historial de Estados
 export interface HistorialEstadoPedido {
-    id: number
-    estado_desde: CodigoEstado | null
-    estado_hacia: CodigoEstado
-    usuario_id: number | null
-    motivo: string | null
-    created_at: string
+  id: number
+  pedido_id: number
+  estado_anterior_id: number | null
+  estado_nuevo_id: number
+  cambiado_por_id: number
+  fecha_cambio: string          
+  observacion: string | null     
+  estado_anterior: { id: number; codigo: CodigoEstado; nombre: string; es_terminal: boolean } | null
+  estado_nuevo: { id: number; codigo: CodigoEstado; nombre: string; es_terminal: boolean }
 }
 
 // ─── Pago (MercadoPago) 
@@ -52,26 +58,26 @@ export interface Pago {
     created_at: string
 }
 
-// ─── Pedido Read (listado compacto)
+// ─── Pedido Read 
 export interface PedidoRead {
-    id: number
-    usuario_id: number
-    estado_codigo: CodigoEstado
-    subtotal: number
-    descuento: number
-    costo_envio: number
-    total: number
-    forma_pago_codigo: string
-    direccion_id: number | null
-    notas: string | null
-    created_at: string
+  id: number
+  usuario_id: number
+  fecha_pedido: string           
+  estado_actual_id: number
+  forma_pago_id: number
+  direccion_entrega_id: number | null
+  subtotal: number
+  descuento: number
+  costo_envio: number
+  total: number
+  estado_actual: { id: number; codigo: CodigoEstado; nombre: string; orden: number; es_terminal: boolean } | null
+  forma_pago: { id: number; nombre: string; codigo: string } | null
 }
 
-// ─── Pedido Detail (vista completa)
+// ─── Pedido Detail
 export interface PedidoDetail extends PedidoRead {
-    items: DetallePedidoRead[]
-    historial: HistorialEstadoPedido[]
-    pago: Pago | null
+  detalles: DetallePedidoRead[]           
+  historial_estados: HistorialEstadoPedido[]   
 }
 
 // ─── Requests
@@ -93,8 +99,8 @@ export interface CrearPedidoRequest {
 
 // Body para PATCH /api/v1/pedidos/{id}/estado
 export interface AvanzarEstadoRequest {
-    nuevo_estado: CodigoEstado
-    motivo?: string | null
+    nuevo_estado_id: number
+    observacion?: string | null
 }
 
 // ─── WebSocket Events
@@ -102,13 +108,3 @@ export type WsEventType =
     | 'estado_cambiado'
     | 'pedido_cancelado'
     | 'pago_confirmado'
-
-export interface WsEvento {
-    event: WsEventType
-    pedido_id: number
-    estado_anterior: CodigoEstado | null
-    estado_nuevo: CodigoEstado
-    usuario_id: number | null
-    motivo: string | null
-    timestamp: string
-}

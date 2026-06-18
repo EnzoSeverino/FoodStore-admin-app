@@ -34,14 +34,19 @@ function processQueue(error: AxiosError | null) {
 apiClient.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
-        const originalRequest = error.config as 
-        InternalAxiosRequestConfig & {
-            _retry?: boolean 
-        }
+        const originalRequest = error.config as
+            InternalAxiosRequestConfig & { _retry?: boolean }
 
-        // ── 401: intentar refresh
-        if (error.response?.status === 401 && !originalRequest._retry) {
-            // Si ya estamos refrescando, encolar este request
+        const url = originalRequest?.url ?? ''
+
+        // ── Nunca intentar refresh en rutas de auth (evita loop infinito)
+        const isAuthRoute = url.includes('/auth/login') ||
+            url.includes('/auth/refresh') ||
+            url.includes('/auth/me') ||
+            url.includes('/auth/register')
+
+        // ── 401: intentar refresh solo si no es ruta de auth
+        if (error.response?.status === 401 && !originalRequest._retry && !isAuthRoute) {
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject })
@@ -53,36 +58,28 @@ apiClient.interceptors.response.use(
             originalRequest._retry = true
             isRefreshing = true
 
-            try{
+            try {
                 const { requestRefresh } = await import('@/api/authApi')
                 await requestRefresh()
-
-                // Refresh exitoso → procesar cola y reintentar request original
                 processQueue(null)
                 return apiClient(originalRequest)
-
             } catch (refreshError) {
-
-                // Refresh falló → limpiar sesión
                 processQueue(refreshError as AxiosError)
-
                 const { useAuthStore } = await import('@/stores/authStore')
                 useAuthStore.getState().clearSession()
-
                 return Promise.reject(refreshError)
-
             } finally {
                 isRefreshing = false
             }
         }
 
         // ── Otros errores: extraer mensaje del body FastAPI
-        const detail = 
+        const detail =
             (error.response?.data as { detail?: string })?.detail ??
             error.message ??
             'Error desconocido'
-            
-            return Promise.reject(new Error(detail))
+
+        return Promise.reject(new Error(detail))
     },
 )
 

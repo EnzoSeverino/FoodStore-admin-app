@@ -58,7 +58,7 @@ export function PedidoTimeline({ historial }: PedidoTimelineProps) {
       {historial.map((entry, index) => {
         const esPrimero = index === 0;
         const esUltimo = index === historial.length - 1;
-        const esCancelacion = entry.estado_hacia === "CANCELADO";
+        const esCancelacion = entry.estado_nuevo.codigo === "CANCELADO";
 
         return (
           <div key={entry.id} className="relative flex gap-4">
@@ -66,17 +66,17 @@ export function PedidoTimeline({ historial }: PedidoTimelineProps) {
             <div className="flex flex-col items-center">
               {/* Punto */}
               <div
-                className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full ring-4 ${puntoColors[entry.estado_hacia]}`}
+                className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full ring-4 ${puntoColors[entry.estado_nuevo.codigo]}`}
               >
                 <span className="text-xs font-bold text-white">
-                  {entry.estado_hacia.charAt(0)}
+                  {entry.estado_nuevo.codigo.charAt(0)}
                 </span>
               </div>
 
               {/* Línea vertical (excepto en el último) */}
               {!esUltimo && (
                 <div
-                  className={`w-0.5 flex-1 ${lineaColors[entry.estado_hacia]}`}
+                  className={`w-0.5 flex-1 ${lineaColors[entry.estado_nuevo.codigo]}`}
                 />
               )}
             </div>
@@ -88,44 +88,44 @@ export function PedidoTimeline({ historial }: PedidoTimelineProps) {
                 {esPrimero ? (
                   <span className="text-xs text-slate-400">Creación</span>
                 ) : (
-                  <Badge variant={estadoVariant[entry.estado_desde!]}>
-                    {estadoLabels[entry.estado_desde!]}
+                  <Badge variant={estadoVariant[entry.estado_anterior!.codigo]}>
+                    {estadoLabels[entry.estado_anterior!.codigo]}
                   </Badge>
                 )}
 
                 <span className="text-slate-400">→</span>
 
-                <Badge variant={estadoVariant[entry.estado_hacia]}>
-                  {estadoLabels[entry.estado_hacia]}
+                <Badge variant={estadoVariant[entry.estado_nuevo.codigo]}>
+                  {estadoLabels[entry.estado_nuevo.codigo]}
                 </Badge>
               </div>
 
               {/* Timestamp */}
               <p className="mt-1 text-xs text-slate-500">
-                {new Date(entry.created_at).toLocaleString("es-AR", {
+                {new Date(entry.fecha_cambio).toLocaleString("es-AR", {
                   day: "2-digit",
                   month: "2-digit",
                   year: "numeric",
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
-                {entry.usuario_id && (
+                {entry.cambiado_por_id && (
                   <span className="ml-2 text-slate-400">
-                    · Usuario #{entry.usuario_id}
+                    · Usuario #{entry.cambiado_por_id}
                   </span>
                 )}
-                {!entry.usuario_id && (
+                {!entry.cambiado_por_id && (
                   <span className="ml-2 text-slate-400">· Sistema</span>
                 )}
               </p>
 
               {/* Motivo (solo en cancelaciones) */}
-              {esCancelacion && entry.motivo && (
+              {esCancelacion && entry.observacion && (
                 <div className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2">
                   <p className="text-xs font-medium text-red-700 mb-0.5">
                     Motivo:
                   </p>
-                  <p className="text-sm text-red-800">{entry.motivo}</p>
+                  <p className="text-sm text-red-800">{entry.observacion}</p>
                 </div>
               )}
             </div>

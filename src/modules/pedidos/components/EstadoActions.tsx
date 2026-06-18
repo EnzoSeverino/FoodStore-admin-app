@@ -2,14 +2,13 @@ import { useState } from "react";
 import { useEstadosPosibles, useAvanzarEstado } from "../hooks/usePedidos";
 import { useToast } from "@/components/ui/Toast";
 import { Badge } from "@/components/ui/Badge";
-import type { CodigoEstado, PedidoRead } from "@/types/pedido";
+import type { CodigoEstado, EstadoPedido, PedidoRead } from "@/types/pedido";
 
 interface EstadoActionsProps {
   pedido: PedidoRead;
-  onCancelarClick: (pedido: PedidoRead) => void;
+  onCancelarClick: (pedido: PedidoRead, canceladoEstadoId: number) => void;
 }
 
-// ─── Mapeo de estado → variante de Badge ────────────────────────────────────
 const estadoVariant: Record<
   CodigoEstado,
   "warning" | "info" | "success" | "danger"
@@ -21,7 +20,6 @@ const estadoVariant: Record<
   CANCELADO: "danger",
 };
 
-// ─── Labels legibles para cada estado ───────────────────────────────────────
 const estadoLabels: Record<CodigoEstado, string> = {
   PENDIENTE: "Pendiente",
   CONFIRMADO: "Confirmar",
@@ -30,7 +28,6 @@ const estadoLabels: Record<CodigoEstado, string> = {
   CANCELADO: "Cancelar",
 };
 
-// ─── Colores de botones según estado destino ────────────────────────────────
 const botonStyles: Record<CodigoEstado, string> = {
   PENDIENTE:
     "bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100",
@@ -49,24 +46,22 @@ export function EstadoActions({ pedido, onCancelarClick }: EstadoActionsProps) {
   );
   const avanzarMutation = useAvanzarEstado();
 
-  // ─── Si el estado actual es terminal, no hay acciones disponibles ─────────
+  // ─── Leer el código del estado desde el objeto anidado ───────────────────
+  const codigoActual = pedido.estado_actual?.codigo;
   const esTerminal =
-    pedido.estado_codigo === "ENTREGADO" ||
-    pedido.estado_codigo === "CANCELADO";
+    codigoActual === "ENTREGADO" || codigoActual === "CANCELADO";
 
   if (esTerminal) {
     return (
-      <Badge variant={estadoVariant[pedido.estado_codigo]}>
-        {estadoLabels[pedido.estado_codigo]}
+      <Badge variant={estadoVariant[codigoActual!]}>
+        {estadoLabels[codigoActual!]}
       </Badge>
     );
   }
 
-  // ─── Handler para avanzar estado ──────────────────────────────────────────
-  const handleAvanzar = async (nuevoEstado: CodigoEstado) => {
-    // Si es cancelación, delegar al modal (necesita motivo)
-    if (nuevoEstado === "CANCELADO") {
-      onCancelarClick(pedido);
+  const handleAvanzar = async (estado: EstadoPedido) => {
+    if (estado.codigo === "CANCELADO") {
+      onCancelarClick(pedido, estado.id);
       return;
     }
 
@@ -74,10 +69,10 @@ export function EstadoActions({ pedido, onCancelarClick }: EstadoActionsProps) {
     try {
       await avanzarMutation.mutateAsync({
         id: pedido.id,
-        data: { nuevo_estado: nuevoEstado },
+        data: { nuevo_estado_id: estado.id },
       });
       toast.success(
-        `Pedido #${pedido.id} avanzado a ${estadoLabels[nuevoEstado]}`,
+        `Pedido #${pedido.id} avanzado a ${estadoLabels[estado.codigo]}`,
       );
     } catch (error) {
       toast.error(
@@ -90,19 +85,19 @@ export function EstadoActions({ pedido, onCancelarClick }: EstadoActionsProps) {
 
   return (
     <div className="flex items-center gap-2">
-      {/* Badge del estado actual */}
-      <Badge variant={estadoVariant[pedido.estado_codigo]}>
-        {estadoLabels[pedido.estado_codigo]}
-      </Badge>
+      {codigoActual && (
+        <Badge variant={estadoVariant[codigoActual]}>
+          {estadoLabels[codigoActual]}
+        </Badge>
+      )}
 
-      {/* Botones de transición */}
       {isLoading ? (
         <span className="text-xs text-slate-400">...</span>
       ) : (
         estadosPosibles.map((estado) => (
           <button
             key={estado.codigo}
-            onClick={() => handleAvanzar(estado.codigo)}
+            onClick={() => handleAvanzar(estado)}
             disabled={avanzando || avanzarMutation.isPending}
             className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors disabled:opacity-50 ${botonStyles[estado.codigo]}`}
           >

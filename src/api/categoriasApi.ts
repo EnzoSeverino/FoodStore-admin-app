@@ -4,15 +4,26 @@ import type { PaginatedResponse } from "@/types/api";
 
 const CATEGORIAS = '/categorias'
 
-// ─── GET /api/v1/categorias
+// ─── GET /api/v1/categorias — reemplazar getCategorias
 export async function getCategorias(
     page = 1,
     size = 20,
 ): Promise<PaginatedResponse<Categoria>> {
-    const response = await apiClient.get<PaginatedResponse<Categoria>>(CATEGORIAS, {
-        params: { page, size },
-    })
-    return response.data
+    // Usar /all para traer todas incluyendo hijas
+    const response = await apiClient.get<Categoria[]>(`${CATEGORIAS}/all`)
+    const items = response.data
+
+    // Paginación client-side
+    const start = (page - 1) * size
+    const paginados = items.slice(start, start + size)
+
+    return {
+        items: paginados,
+        total: items.length,
+        page,
+        size,
+        pages: Math.ceil(items.length / size) || 1,
+    }
 }
 
 // ─── GET /api/v1/categorias/all 

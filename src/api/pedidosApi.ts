@@ -4,7 +4,6 @@ import type {
     PedidoDetail,
     EstadoPedido,
     HistorialEstadoPedido,
-    AvanzarEstadoRequest,
 } from "@/types/pedido";
 import type { PaginatedResponse } from "@/types/api";
 
@@ -16,8 +15,27 @@ export async function getPedidos(params?: {
     size?: number
     estado_codigo?: string
 }): Promise<PaginatedResponse<PedidoRead>> {
-    const response = await apiClient.get<PaginatedResponse<PedidoRead>>(PEDIDOS, { params })
-    return response.data
+    const response = await apiClient.get<PedidoRead[]>(PEDIDOS)  // ← array plano, sin params
+    const items = response.data
+
+    // Filtrar por estado en el frontend si viene el filtro
+    const filtrados = params?.estado_codigo
+        ? items.filter(p => p.estado_actual?.codigo === params.estado_codigo)
+        : items
+
+    // Simular paginación client-side
+    const page = params?.page ?? 1
+    const size = params?.size ?? 20
+    const start = (page - 1) * size
+    const paginados = filtrados.slice(start, start + size)
+
+    return {
+        items: paginados,
+        total: filtrados.length,
+        page,
+        size,
+        pages: Math.ceil(filtrados.length / size) || 1,
+    }
 }
 
 // ─── GET /api/v1/pedidos/{id} 
@@ -27,9 +45,11 @@ export async function getPedidoById(id: number): Promise<PedidoDetail> {
 }
 
 // ─── PATCH /api/v1/pedidos/{id}/estado
-export async function avanzarEstado(id: number, data: AvanzarEstadoRequest): Promise<PedidoRead> {
-    const response = await apiClient.patch<PedidoRead>(`${PEDIDOS}/${id}/estado`, data)
-    return response.data
+export async function avanzarEstado(
+    id: number, 
+    data: { nuevo_estado_id: number; observacion?: string | null }
+): Promise<void> {
+    await apiClient.patch<PedidoRead>(`${PEDIDOS}/${id}/estado`, data)
 }
 
 // ─── GET /api/v1/pedidos/{id}/historial 

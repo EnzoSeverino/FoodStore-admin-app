@@ -38,18 +38,21 @@ export function PedidoDetallePage() {
   const [pedidoACancelar, setPedidoACancelar] = useState<PedidoRead | null>(
     null,
   );
+  const [canceladoEstadoId, setCanceladoEstadoId] = useState<number>(0);
 
   // ─── Queries ────────────────────────────────────────────────────────────
   const { data: pedido, isLoading, isError } = usePedidoById(pedidoId);
   const { data: historial = [] } = useHistorialPedido(pedidoId);
 
   // ─── Handler de cancelación ─────────────────────────────────────────────
-  const handleCancelarClick = (pedido: PedidoRead) => {
+  const handleCancelarClick = (pedido: PedidoRead, estadoId: number) => {
     setPedidoACancelar(pedido);
+    setCanceladoEstadoId(estadoId);
   };
 
   const handleCancelarClose = () => {
     setPedidoACancelar(null);
+    setCanceladoEstadoId(0);
   };
 
   // ─── Loading state ──────────────────────────────────────────────────────
@@ -125,7 +128,7 @@ export function PedidoDetallePage() {
               Pedido #{pedido.id}
             </h1>
             <p className="text-sm text-slate-500">
-              {new Date(pedido.created_at).toLocaleString("es-AR")}
+              {new Date(pedido.fecha_pedido).toLocaleString("es-AR")}
             </p>
           </div>
         </div>
@@ -152,24 +155,20 @@ export function PedidoDetallePage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-600">Estado:</span>
-                <Badge variant={estadoVariant[pedido.estado_codigo]}>
-                  {estadoLabels[pedido.estado_codigo]}
+                <Badge
+                  variant={
+                    estadoVariant[pedido.estado_actual?.codigo ?? "PENDIENTE"]
+                  }
+                >
+                  {estadoLabels[pedido.estado_actual?.codigo ?? "PENDIENTE"]}
                 </Badge>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-600">Forma de pago:</span>
                 <span className="font-medium text-slate-900">
-                  {pedido.forma_pago_codigo}
+                  {pedido.forma_pago?.codigo ?? ""}
                 </span>
               </div>
-              {pedido.notas && (
-                <div className="pt-2 border-t border-slate-100">
-                  <p className="text-xs font-medium text-slate-600 mb-1">
-                    Notas:
-                  </p>
-                  <p className="text-sm text-slate-700">{pedido.notas}</p>
-                </div>
-              )}
             </div>
           </div>
 
@@ -178,23 +177,23 @@ export function PedidoDetallePage() {
             <h2 className="text-base font-semibold text-slate-900 mb-4">
               Items del Pedido
             </h2>
-            {pedido.items.length === 0 ? (
+            {pedido.detalles.length === 0 ? (
               <p className="text-sm text-slate-400">
                 No hay items en este pedido
               </p>
             ) : (
               <div className="space-y-3">
-                {pedido.items.map((item, idx) => (
+                {pedido.detalles.map((item, idx) => (
                   <div
                     key={idx}
                     className="flex justify-between items-start border-b border-slate-100 pb-3 last:border-0"
                   >
                     <div className="flex-1">
                       <p className="text-sm font-medium text-slate-900">
-                        {item.nombre_snapshot}
+                        {item.nombre_producto}
                       </p>
                       <p className="text-xs text-slate-500">
-                        ${item.precio_snapshot.toFixed(2)} × {item.cantidad}
+                        ${item.precio_unitario.toFixed(2)} × {item.cantidad}
                       </p>
                     </div>
                     <p className="text-sm font-semibold text-slate-900">
@@ -251,63 +250,6 @@ export function PedidoDetallePage() {
             </h2>
             <PedidoTimeline historial={historial} />
           </div>
-
-          {/* Información de pago (si existe) */}
-          {pedido.pago && (
-            <div className="rounded-xl border border-slate-200 bg-white p-6">
-              <h2 className="text-base font-semibold text-slate-900 mb-4">
-                Información de Pago
-              </h2>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Estado:</span>
-                  <Badge
-                    variant={
-                      pedido.pago.mp_status === "approved"
-                        ? "success"
-                        : pedido.pago.mp_status === "rejected"
-                          ? "danger"
-                          : "warning"
-                    }
-                  >
-                    {pedido.pago.mp_status}
-                  </Badge>
-                </div>
-                {pedido.pago.mp_payment_id && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">ID MercadoPago:</span>
-                    <span className="font-mono text-xs text-slate-900">
-                      {pedido.pago.mp_payment_id}
-                    </span>
-                  </div>
-                )}
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Monto:</span>
-                  <span className="font-medium text-slate-900">
-                    ${pedido.pago.transaction_amount.toFixed(2)}
-                  </span>
-                </div>
-                {pedido.pago.payment_method_id && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Método:</span>
-                    <span className="text-slate-900">
-                      {pedido.pago.payment_method_id}
-                    </span>
-                  </div>
-                )}
-                {pedido.pago.mp_status_detail && (
-                  <div className="pt-2 border-t border-slate-100">
-                    <p className="text-xs font-medium text-slate-600 mb-1">
-                      Detalle:
-                    </p>
-                    <p className="text-sm text-slate-700">
-                      {pedido.pago.mp_status_detail}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -316,6 +258,7 @@ export function PedidoDetallePage() {
         pedido={pedidoACancelar}
         isOpen={pedidoACancelar !== null}
         onClose={handleCancelarClose}
+        canceladoEstadoId={canceladoEstadoId}
       />
     </div>
   );

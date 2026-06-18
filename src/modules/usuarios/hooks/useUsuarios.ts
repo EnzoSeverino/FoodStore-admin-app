@@ -4,24 +4,26 @@ import {
     createUsuario,
     updateUsuario,
     deleteUsuario,
+    type UsuarioAdmin,
+    type UsuarioAdminCreate,
+    type UsuarioAdminUpdate,
 } from "@/api/usuariosApi";
-import type { Usuario, UsuarioCreate, UsuarioUpdate } from "@/types/usuario";
 import type { PaginatedResponse } from "@/types/api";
 
 const USUARIOS_KEY = ['usuarios'] as const
 
 export function useUsuarios(page = 1, size = 20) {
-  return useQuery<PaginatedResponse<Usuario>>({
-    queryKey: [...USUARIOS_KEY, page, size],
+  return useQuery<PaginatedResponse<UsuarioAdmin>>({
+    queryKey: [...USUARIOS_KEY, { page, size }],
     queryFn: () => getUsuarios(page, size),
-    staleTime: 2 * 60 * 1000, // 2 minutos
+    staleTime: 2 * 60 * 1000,
   })
 }
 
 export function useCreateUsuario() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (data: UsuarioCreate) => createUsuario(data),
+    mutationFn: (data: UsuarioAdminCreate) => createUsuario(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USUARIOS_KEY })
     },
@@ -31,7 +33,7 @@ export function useCreateUsuario() {
 export function useUpdateUsuario() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UsuarioUpdate }) =>
+    mutationFn: ({ id, data }: { id: number; data: UsuarioAdminUpdate }) =>
       updateUsuario(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USUARIOS_KEY })

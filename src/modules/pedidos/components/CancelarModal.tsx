@@ -7,17 +7,21 @@ interface CancelarModalProps {
   pedido: PedidoRead | null;
   isOpen: boolean;
   onClose: () => void;
+  canceladoEstadoId: number;
 }
 
-export function CancelarModal({ pedido, isOpen, onClose }: CancelarModalProps) {
+export function CancelarModal({
+  pedido,
+  isOpen,
+  onClose,
+  canceladoEstadoId,
+}: CancelarModalProps) {
   const toast = useToast();
   const [motivo, setMotivo] = useState("");
   const avanzarMutation = useAvanzarEstado();
 
-  // ─── Handler de submit ────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!pedido) return;
 
     if (!motivo.trim()) {
@@ -29,8 +33,8 @@ export function CancelarModal({ pedido, isOpen, onClose }: CancelarModalProps) {
       await avanzarMutation.mutateAsync({
         id: pedido.id,
         data: {
-          nuevo_estado: "CANCELADO",
-          motivo: motivo.trim(),
+          nuevo_estado_id: canceladoEstadoId,
+          observacion: motivo.trim(),
         },
       });
       toast.success(`Pedido #${pedido.id} cancelado correctamente`);
@@ -43,7 +47,6 @@ export function CancelarModal({ pedido, isOpen, onClose }: CancelarModalProps) {
     }
   };
 
-  // ─── Handler de cierre ────────────────────────────────────────────────────
   const handleClose = () => {
     setMotivo("");
     onClose();
@@ -59,7 +62,6 @@ export function CancelarModal({ pedido, isOpen, onClose }: CancelarModalProps) {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Información del pedido */}
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <div className="flex justify-between text-sm">
               <span className="text-slate-600">Total:</span>
@@ -70,12 +72,11 @@ export function CancelarModal({ pedido, isOpen, onClose }: CancelarModalProps) {
             <div className="flex justify-between text-sm mt-1">
               <span className="text-slate-600">Estado actual:</span>
               <span className="font-medium text-slate-900">
-                {pedido.estado_codigo}
+                {pedido.estado_actual?.codigo ?? "—"}
               </span>
             </div>
           </div>
 
-          {/* Campo: Motivo (obligatorio) */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Motivo de cancelación <span className="text-red-500">*</span>
@@ -94,7 +95,6 @@ export function CancelarModal({ pedido, isOpen, onClose }: CancelarModalProps) {
             </p>
           </div>
 
-          {/* Botones de acción */}
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"

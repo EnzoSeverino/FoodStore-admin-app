@@ -80,12 +80,12 @@ export interface ProductoCreate {
     nombre: string
     descripcion?: string
     precio_base: number
+    stock_cantidad: number
+    disponible?: boolean
     imagenes_url?: string[]
     unidad_venta_id?: number | null
-    stock_cantidad: number
-    disponible: boolean
     categorias: CategoriaInput[]
-    ingredientes: IngredienteInput[]
+    ingredientes_ids: number[]
 }
 
 // ─── Producto Update
@@ -93,12 +93,12 @@ export interface ProductoUpdate {
     nombre?: string
     descripcion?: string
     precio_base?: number
-    imagenes_url?: string[]
-    unidad_venta_id?: number | null
     stock_cantidad?: number
     disponible?: boolean
+    imagenes_url?: string[]
+    unidad_venta_id?: number | null
     categorias?: CategoriaInput[]
-    ingredientes?: IngredienteInput[]
+    ingredientes_ids?: number[]
 }
 
 // ─── Cloudinary

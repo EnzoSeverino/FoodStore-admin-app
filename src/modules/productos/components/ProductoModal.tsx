@@ -121,12 +121,13 @@ export function ProductoModal({
     const data: ProductoCreate | ProductoUpdate = {
       nombre,
       descripcion: descripcion || undefined,
-      precio_base: Number(stockCantidad),
+      precio_base: Number(precioBase),
+      stock_cantidad: Number(stockCantidad),
       disponible,
       imagenes_url: imagenesUrl.length > 0 ? imagenesUrl : undefined,
       unidad_venta_id: unidadVentaId,
       categorias: categoriasSeleccionadas,
-      ingredientes,
+      ingredientes_ids: ingredientes.map((i) => i.ingrediente_id),
     };
 
     onSubmit(data);

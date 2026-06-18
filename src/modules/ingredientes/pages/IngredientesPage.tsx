@@ -12,6 +12,7 @@ import { SkeletonTable } from "@/components/ui/SkeletonLoader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useToast } from "@/components/ui/Toast";
+import { hasRole } from "@/lib/roles";
 import type {
   Ingrediente,
   IngredienteCreate,
@@ -20,7 +21,7 @@ import type {
 
 export function IngredientesPage() {
   const user = useAuthStore((s) => s.user);
-  const isAdmin = user?.roles.includes("ADMIN") ?? false;
+  const isAdmin = hasRole(user, "ADMIN");
   const toast = useToast();
 
   // ─── Paginación ─────────────────────────────────────────────────────────
