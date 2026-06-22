@@ -10,7 +10,7 @@ interface BackendUserPublic {
     apellido: string | null
     email: string
     celular: string | null
-    roles: string[]   // el backend devuelve array
+    roles: string[]   
 }
 
 // Convierte la respuesta del backend al tipo que usa el frontend
@@ -21,7 +21,7 @@ function mapUser(u: BackendUserPublic): UserPublic {
         apellido: u.apellido,
         email: u.email,
         celular: u.celular,
-        rol: u.roles?.[0]?.toUpperCase() ?? 'CLIENT',  // tomar el primero del array
+        rol: u.roles?.[0]?.toUpperCase() ?? 'CLIENT',  
     }
 }
 

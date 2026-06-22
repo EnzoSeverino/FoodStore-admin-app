@@ -3,7 +3,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useWebSocket, type WsMessage } from "./useWebSocket";
 import { useWsStore } from "@/stores/wsStore";
 
-// Evento real emitido por el backend en cambios de pedido
 interface PedidoWsEvent {
     type: 'pedido_estado_update' | 'pedido_nuevo'
     pedido_id: number
@@ -22,13 +21,11 @@ export function useAdminOrdersFeed() {
     const setLastEvent = useWsStore((s) => s.setLastEvent)
 
     const handleMessage = useCallback((msg: WsMessage) => {
-        // Evento sintético generado al conectar (ver useWebSocket.ts)
         if (msg.event === 'WS_CONNECTED') {
             queryClient.invalidateQueries({ queryKey: ['pedidos'] })
             return
         }
 
-        // Eventos reales del backend: { type, pedido_id, ... }
         if (!isPedidoWsEvent(msg)) return
 
         queryClient.invalidateQueries({ queryKey: ['pedidos'] })

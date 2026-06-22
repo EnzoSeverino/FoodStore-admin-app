@@ -5,7 +5,6 @@ import type { PaginatedResponse } from "@/types/api";
 const INGREDIENTES = '/ingredientes'
 
 // ─── GET /api/v1/ingredientes
-// El backend no pagina este recurso: siempre devuelve la lista completa.
 export async function getAllIngredientes(): Promise<Ingrediente[]> {
     const response = await apiClient.get<Ingrediente[]>(INGREDIENTES)
     return response.data

@@ -13,8 +13,6 @@ export async function getAllCategorias(): Promise<Categoria[]> {
 }
 
 // ─── GET /api/v1/categorias (paginado client-side)
-// El backend no expone paginación real para categorías con jerarquía,
-// así que paginamos sobre el resultado completo de /all.
 export async function getCategorias(
     page = 1,
     size = 20,

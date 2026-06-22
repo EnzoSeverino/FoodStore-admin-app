@@ -38,7 +38,7 @@ export interface ProductoIngrediente {
     es_removible: boolean
 }
 
-// ─── Categoría simple (para mostrar dentro de un producto)
+// ─── Categoría simple
 export interface CategoriaSimple {
     id: number
     nombre: string

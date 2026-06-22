@@ -66,8 +66,6 @@ export function useWebSocket({
         const connect = () => {
             if (cancelled) return
 
-            // El backend exige el JWT como query param en el handshake del WS
-            // (no lee la cookie httpOnly para esta conexión).
             const url = `${getWsUrl()}?token=${encodeURIComponent(token)}`
 
             const ws = new WebSocket(url)

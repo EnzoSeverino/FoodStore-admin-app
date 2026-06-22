@@ -15,9 +15,6 @@ export function ImageGallery({
 }: ImageGalleryProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Cloudinary no nos da el public_id de vuelta al leer el producto (solo la URL),
-  // así que solo podemos asociar public_id a imágenes subidas en esta sesión.
-  // Las imágenes ya existentes del producto se borran solo del array local.
   const [publicIdsPorUrl, setPublicIdsPorUrl] = useState<
     Record<string, string>
   >({});

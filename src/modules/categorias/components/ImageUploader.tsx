@@ -47,12 +47,10 @@ export function ImageUploader({
 
     setError(null);
 
-    // Validar tipo y tamaño
     const validationError = validateFile(file);
     if (validationError) {
       setError(validationError);
 
-      // Limpiar el input para que el usuario pueda seleccionar otro archivo
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }

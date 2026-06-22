@@ -15,7 +15,7 @@ export async function getPedidos(params?: {
     size?: number
     estado_codigo?: string
 }): Promise<PaginatedResponse<PedidoRead>> {
-    const response = await apiClient.get<PedidoRead[]>(PEDIDOS)  // ← array plano, sin params
+    const response = await apiClient.get<PedidoRead[]>(PEDIDOS)  
     const items = response.data
 
     // Filtrar por estado en el frontend si viene el filtro

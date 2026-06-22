@@ -11,8 +11,6 @@ import type { PaginatedResponse } from "@/types/api";
 const PRODUCTOS = '/productos'
 
 // ─── GET /api/v1/productos
-// El backend devuelve { items, total, skip, limit } — no usa page/size/pages,
-// así que los derivamos acá para mantener el contrato PaginatedResponse<T>.
 export async function getProductos(params?: {
     page?: number
     size?: number

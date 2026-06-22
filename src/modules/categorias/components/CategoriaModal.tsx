@@ -22,7 +22,6 @@ export function CategoriaModal({
   categoriaEditing,
   isLoading,
 }: CategoriaModalProps) {
-  // Estados inicializados directamente desde categoriaEditing (sin useEffect)
   const [nombre, setNombre] = useState(categoriaEditing?.nombre ?? "");
   const [descripcion, setDescripcion] = useState(
     categoriaEditing?.descripcion ?? "",

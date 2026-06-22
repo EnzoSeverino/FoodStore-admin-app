@@ -29,8 +29,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     checkAuth: async () => {
         const { requestRefresh } = await import('@/api/authApi')
         try {
-            // requestRefresh ya devuelve el usuario actualizado — evita una
-            // segunda llamada redundante a requestMe()
             const tokenResponse = await requestRefresh()
             set({
                 user: tokenResponse.usuario,

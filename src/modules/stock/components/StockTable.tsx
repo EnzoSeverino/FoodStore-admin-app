@@ -35,7 +35,7 @@ export function StockTable({ data, onToggleDisponibilidad }: StockTableProps) {
         }
         return (
           <img
-            src={imagenes[0].url} // ← imagenes[0].url en vez de imagenes[0]
+            src={imagenes[0].url}
             alt="Producto"
             className="h-12 w-12 rounded-lg object-cover border border-slate-200"
           />

@@ -49,7 +49,7 @@ export function ProductosTable({
             {imagenes.slice(0, 3).map((img, idx) => (
               <img
                 key={idx}
-                src={img.url} // ← img.url en vez de url directa
+                src={img.url}
                 alt={`Producto ${idx + 1}`}
                 className="h-12 w-12 rounded-lg object-cover border border-slate-200"
               />

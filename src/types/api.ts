@@ -16,7 +16,7 @@ export interface UserPublic {
 export interface TokenResponse {
     access_token: string
     refresh_token: string
-    usuario: UserPublic   // ← reutiliza el tipo, no lo redeclara
+    usuario: UserPublic   
 }
 
 // Error estándar RFC 7807 que devuelve FastAPI
