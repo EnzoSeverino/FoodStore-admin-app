@@ -51,7 +51,7 @@ export interface Producto {
     nombre: string
     descripcion: string | null
     precio_base: number
-    imagenes_url: string[] | null     
+    imagenes_url: { url: string; public_id: string | null }[] | null 
     unidad_venta_id: number | null    
     unidad_venta: UnidadMedida | null 
     stock_cantidad: number

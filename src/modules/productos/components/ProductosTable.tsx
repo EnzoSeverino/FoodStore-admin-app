@@ -46,10 +46,10 @@ export function ProductosTable({
         }
         return (
           <div className="flex gap-1">
-            {imagenes.slice(0, 3).map((url, idx) => (
+            {imagenes.slice(0, 3).map((img, idx) => (
               <img
                 key={idx}
-                src={url}
+                src={img.url} // ← img.url en vez de url directa
                 alt={`Producto ${idx + 1}`}
                 className="h-12 w-12 rounded-lg object-cover border border-slate-200"
               />

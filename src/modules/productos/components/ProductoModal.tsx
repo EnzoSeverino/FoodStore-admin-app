@@ -45,7 +45,7 @@ export function ProductoModal({
     productoEditing?.disponible ?? true,
   );
   const [imagenesUrl, setImagenesUrl] = useState<string[]>(
-    productoEditing?.imagenes_url ?? [],
+    productoEditing?.imagenes_url?.map((img) => img.url) ?? [],
   );
   const [unidadVentaId, setUnidadVentaId] = useState<number | null>(
     productoEditing?.unidad_venta_id ?? null,
