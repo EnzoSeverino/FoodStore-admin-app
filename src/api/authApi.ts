@@ -51,8 +51,6 @@ export async function requestLogin(
 
 // ─── Refresh Token
 export async function requestRefresh(): Promise<TokenResponse> {
-    // Intentar con cookie primero (withCredentials: true lo hace automático)
-    // Si falla, el interceptor lo maneja
     const refreshToken = localStorage.getItem('refresh_token')
 
     const response = await apiClient.post<{

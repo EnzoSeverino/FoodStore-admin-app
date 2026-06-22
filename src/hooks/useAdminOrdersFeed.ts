@@ -3,53 +3,45 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useWebSocket, type WsMessage } from "./useWebSocket";
 import { useWsStore } from "@/stores/wsStore";
 
-export function useAdminOrdersFeed() {
+// Evento real emitido por el backend en cambios de pedido
+interface PedidoWsEvent {
+    type: 'pedido_estado_update' | 'pedido_nuevo'
+    pedido_id: number
+    estado_codigo?: string
+    usuario_id?: number
+    total?: number
+}
 
+function isPedidoWsEvent(msg: unknown): msg is PedidoWsEvent {
+    const tipo = (msg as { type?: string })?.type
+    return tipo === 'pedido_estado_update' || tipo === 'pedido_nuevo'
+}
+
+export function useAdminOrdersFeed() {
     const queryClient = useQueryClient()
     const setLastEvent = useWsStore((s) => s.setLastEvent)
 
-    // ─── onMessage
     const handleMessage = useCallback((msg: WsMessage) => {
-        
+        // Evento sintético generado al conectar (ver useWebSocket.ts)
         if (msg.event === 'WS_CONNECTED') {
             queryClient.invalidateQueries({ queryKey: ['pedidos'] })
             return
         }
 
-        // ── Eventos reales del backend ────────────────────────────────────
+        // Eventos reales del backend: { type, pedido_id, ... }
+        if (!isPedidoWsEvent(msg)) return
 
-        const  tipo = (msg as unknown as { type?: string }).type
+        queryClient.invalidateQueries({ queryKey: ['pedidos'] })
+        queryClient.invalidateQueries({ queryKey: ['pedido', msg.pedido_id] })
+        queryClient.invalidateQueries({ queryKey: ['pedido-historial', msg.pedido_id] })
 
-        if (tipo === 'pedido_estado_update' || tipo === 'pedido_nuevo') {
-            const data = msg as unknown as {
-                type: string
-                pedido_id: number
-                estado_codigo?: string
-                usuario_id?: number
-                total?: number
-            }
-
-            if (!data.pedido_id) return
-
-            // Invalidar la query de listados → la tabla se actualiza sola
-            queryClient.invalidateQueries({ queryKey: ['pedidos'] })
-
-            // Invalidar la query de detalle → si la página de detalle está abierta
-            queryClient.invalidateQueries({ queryKey: ['pedido', data.pedido_id] })
-
-            // Invalidar historial del pedido → el timeline se actualiza
-            queryClient.invalidateQueries({ queryKey: ['pedido-historial', data.pedido_id] })
-
-            // Guardar resumen del evento en el wsStore para el badge
-            setLastEvent({
-                event: tipo,
-                pedido_id: data.pedido_id,
-                timestamp: new Date().toISOString(),
-            })
-        }
+        setLastEvent({
+            event: msg.type,
+            pedido_id: msg.pedido_id,
+            timestamp: new Date().toISOString(),
+        })
     }, [queryClient, setLastEvent])
 
-    // ─── Conectar al WebSocket ──────────────────────────────────────────────
     const { subscribeToOrder, unsubscribeFromOrder } = useWebSocket({
         onMessage: handleMessage,
         enabled: true,

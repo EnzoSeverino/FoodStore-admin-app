@@ -24,20 +24,19 @@ export const useAuthStore = create<AuthState>((set) => ({
     setError: (error) => set({ error }),
 
     clearSession: () =>
-        set({ user: null, isAuthenticated: false, isLoading: false }),
+        set({ user: null, isAuthenticated: false, isLoading: false, accessToken: null }),
 
     checkAuth: async () => {
         const { requestRefresh } = await import('@/api/authApi')
         try {
-            // Usar refresh para obtener un nuevo access token y setearlo
+            // requestRefresh ya devuelve el usuario actualizado — evita una
+            // segunda llamada redundante a requestMe()
             const tokenResponse = await requestRefresh()
-            const { requestMe } = await import('@/api/authApi')
-            const user = await requestMe()
-            set({ 
-                user, 
-                isAuthenticated: true, 
+            set({
+                user: tokenResponse.usuario,
+                isAuthenticated: true,
                 isLoading: false,
-                accessToken: tokenResponse.access_token  // ← guardar el token
+                accessToken: tokenResponse.access_token,
             })
         } catch {
             set({ user: null, isAuthenticated: false, isLoading: false, accessToken: null })
@@ -45,11 +44,15 @@ export const useAuthStore = create<AuthState>((set) => ({
     },
 
     login: async (email, password) => {
-        const { requestLogin, requestMe } = await import('@/api/authApi')
+        const { requestLogin } = await import('@/api/authApi')
         try {
             const tokenResponse = await requestLogin(email, password)
-            const user = await requestMe()
-            set({ user, isAuthenticated: true, error: null, accessToken: tokenResponse.access_token })
+            set({
+                user: tokenResponse.usuario,
+                isAuthenticated: true,
+                error: null,
+                accessToken: tokenResponse.access_token,
+            })
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Error al iniciar sesión'
             set({ error: message })
@@ -58,11 +61,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     },
 
     logout: async () => {
-        const { requestLogout} = await import('@/api/authApi')
+        const { requestLogout } = await import('@/api/authApi')
         try {
             await requestLogout()
         } finally {
-            set({ user: null, isAuthenticated: false })
+            set({ user: null, isAuthenticated: false, accessToken: null })
         }
     },
 }))

@@ -74,7 +74,7 @@ export function CategoriasPage() {
     try {
       if (categoriaEditing) {
         await updateMutation.mutateAsync({ id: categoriaEditing.id, data });
-        toast.success("Catgoría actualizada correctamente");
+        toast.success("Categoría actualizada correctamente");
       } else {
         await createMutation.mutateAsync(data as CategoriaCreate);
         toast.success("Categoría creada correctamente");

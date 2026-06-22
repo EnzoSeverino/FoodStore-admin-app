@@ -11,6 +11,8 @@ import type { PaginatedResponse } from "@/types/api";
 const PRODUCTOS = '/productos'
 
 // ─── GET /api/v1/productos
+// El backend devuelve { items, total, skip, limit } — no usa page/size/pages,
+// así que los derivamos acá para mantener el contrato PaginatedResponse<T>.
 export async function getProductos(params?: {
     page?: number
     size?: number
@@ -18,27 +20,33 @@ export async function getProductos(params?: {
     disponible?: boolean
     search?: string
 }): Promise<PaginatedResponse<Producto>> {
-    const backendParams: Record<string, unknown> = {}
-  if (params?.search) backendParams.busqueda = params.search      
-  if (params?.categoria) backendParams.categoria_id = params.categoria  
-  if (params?.disponible !== undefined) backendParams.disponible = params.disponible
-  if (params?.page) backendParams.skip = ((params.page ?? 1) - 1) * (params.size ?? 20)
-  if (params?.size) backendParams.limit = params.size
+    const size = params?.size ?? 20
+    const page = params?.page ?? 1
 
-  const response = await apiClient.get('/productos', { params: backendParams })
-  const data = response.data
+    const backendParams: Record<string, unknown> = {
+        skip: (page - 1) * size,
+        limit: size,
+    }
+    if (params?.search) backendParams.busqueda = params.search
+    if (params?.categoria) backendParams.categoria_id = params.categoria
+    if (params?.disponible !== undefined) backendParams.disponible = params.disponible
 
-  if (Array.isArray(data)) {
-    return { items: data, total: data.length, page: params?.page ?? 1, size: params?.size ?? 20, pages: 1 }
-  }
+    const response = await apiClient.get<{
+        items: Producto[]
+        total: number
+        skip: number
+        limit: number
+    }>(PRODUCTOS, { params: backendParams })
 
-  return {
-    items: data.items ?? data,
-    total: data.total ?? (data.items?.length ?? 0),
-    page: params?.page ?? 1,
-    size: params?.size ?? 20,
-    pages: Math.ceil((data.total ?? 1) / (params?.size ?? 20)),
-  }
+    const { items, total } = response.data
+
+    return {
+        items,
+        total,
+        page,
+        size,
+        pages: Math.ceil(total / size) || 1,
+    }
 }
 
 // ─── GET /api/v1/productos/all 

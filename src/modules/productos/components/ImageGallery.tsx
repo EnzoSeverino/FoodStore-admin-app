@@ -15,6 +15,12 @@ export function ImageGallery({
 }: ImageGalleryProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Cloudinary no nos da el public_id de vuelta al leer el producto (solo la URL),
+  // así que solo podemos asociar public_id a imágenes subidas en esta sesión.
+  // Las imágenes ya existentes del producto se borran solo del array local.
+  const [publicIdsPorUrl, setPublicIdsPorUrl] = useState<
+    Record<string, string>
+  >({});
 
   const uploadMutation = useUploadImage();
   const deleteMutation = useDeleteImage();
@@ -29,8 +35,11 @@ export function ImageGallery({
     try {
       const response: CloudinaryResponse =
         await uploadMutation.mutateAsync(file);
-      const nuevasImagenes = [...imagenes, response.secure_url];
-      onImagesChange(nuevasImagenes);
+      setPublicIdsPorUrl((prev) => ({
+        ...prev,
+        [response.secure_url]: response.public_id,
+      }));
+      onImagesChange([...imagenes, response.secure_url]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al subir la imagen");
     } finally {
@@ -39,13 +48,15 @@ export function ImageGallery({
     }
   };
 
-  const handleDeleteImage = async (index: number, publicId?: string) => {
+  const handleDeleteImage = async (index: number) => {
+    const url = imagenes[index];
+    const publicId = publicIdsPorUrl[url];
+
     try {
       if (publicId) {
         await deleteMutation.mutateAsync(publicId);
       }
-      const nuevasImagenes = imagenes.filter((_, i) => i !== index);
-      onImagesChange(nuevasImagenes);
+      onImagesChange(imagenes.filter((_, i) => i !== index));
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Error al eliminar la imagen",
@@ -64,7 +75,6 @@ export function ImageGallery({
         </span>
       </div>
 
-      {/* Galería de imágenes */}
       {imagenes.length > 0 && (
         <div className="grid grid-cols-3 gap-4">
           {imagenes.map((url, index) => (
@@ -88,7 +98,6 @@ export function ImageGallery({
         </div>
       )}
 
-      {/* Botón para subir nueva imagen */}
       <div className="flex items-center gap-4">
         <label
           className={`
@@ -123,10 +132,8 @@ export function ImageGallery({
         </label>
       </div>
 
-      {/* Mensaje de error */}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
-      {/* Nota informativa */}
       <p className="text-xs text-slate-500">
         Las imágenes se suben a Cloudinary. Formatos aceptados: JPG, PNG, WebP.
         Tamaño máximo: 5MB.

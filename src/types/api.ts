@@ -4,19 +4,6 @@ export interface LoginRequest {
     password: string
 }
 
-export interface TokenResponse {
-  access_token: string
-  refresh_token: string
-  usuario: {
-    id: number
-    email: string
-    nombre: string
-    apellido: string | null
-    celular: string | null
-    rol: string       // campo único, no array
-  }
-}
-
 export interface UserPublic {
     id: number
     nombre: string
@@ -24,6 +11,12 @@ export interface UserPublic {
     email: string
     rol: string
     celular: string | null
+}
+
+export interface TokenResponse {
+    access_token: string
+    refresh_token: string
+    usuario: UserPublic   // ← reutiliza el tipo, no lo redeclara
 }
 
 // Error estándar RFC 7807 que devuelve FastAPI

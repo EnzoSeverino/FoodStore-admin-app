@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAllCategorias } from "../hooks/useCategorias";
-import { ImageUploader } from "./ImageUploder";
+import { ImageUploader } from "./ImageUploader";
 import type {
   Categoria,
   CategoriaCreate,

@@ -1,18 +1,6 @@
 import apiClient from "./axiosInstance";
 
-// ─── Tipos del endpoint /admin/dashboard
-export interface DashboardBackend {
-  total_productos: number
-  total_categorias: number
-  total_ingredientes: number
-  total_pedidos: number
-  pedidos_hoy: number
-  ingresos_totales: number
-  pedidos_por_estado: { codigo: string; nombre: string; cantidad: number }[]
-  pedidos_recientes: { id: number; total: number; fecha: string; estado_codigo: string }[]
-}
-
-// ─── Tipos del endpoint /estadisticas
+// ─── Tipos de respuesta de /estadisticas/*
 export interface DashboardTotals {
   total_productos: number
   total_categorias: number
@@ -22,40 +10,40 @@ export interface DashboardTotals {
 }
 
 export interface PedidosPorEstado {
-  estado: string   
+  estado: string
   cantidad: number
 }
 
 export interface VentasPorPeriodo {
   fecha: string
-  total_ventas: number      
-  cantidad_pedidos: number  
+  total_ventas: number
+  cantidad_pedidos: number
 }
 
 export interface ProductoTop {
   producto_id: number
   nombre: string
-  cantidad_total: number  
-  monto_total: number     
+  cantidad_total: number
+  monto_total: number
 }
 
+// ─── GET /api/v1/estadisticas/resumen
 export async function getDashboardTotals(): Promise<DashboardTotals> {
-    // /admin/dashboard no tiene total_usuarios — usar /estadisticas/resumen
-    const response = await apiClient.get<{
-        total_productos: number
-        total_categorias: number
-        total_ingredientes: number
-        total_pedidos: number
-        total_usuarios: number
-    }>('/estadisticas/resumen')
+  const response = await apiClient.get<{
+    total_productos: number
+    total_categorias: number
+    total_ingredientes: number
+    total_pedidos: number
+    total_usuarios: number
+  }>('/estadisticas/resumen')
 
-    return {
-        total_productos: response.data.total_productos,
-        total_categorias: response.data.total_categorias,
-        total_ingredientes: response.data.total_ingredientes,
-        total_pedidos: response.data.total_pedidos,
-        total_usuarios: response.data.total_usuarios,
-    }
+  return {
+    total_productos: response.data.total_productos,
+    total_categorias: response.data.total_categorias,
+    total_ingredientes: response.data.total_ingredientes,
+    total_pedidos: response.data.total_pedidos,
+    total_usuarios: response.data.total_usuarios,
+  }
 }
 
 // ─── GET /api/v1/estadisticas/pedidos-por-estado

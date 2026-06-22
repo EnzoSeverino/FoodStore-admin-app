@@ -27,6 +27,10 @@ export function ProductoModal({
   productoEditing,
   isLoading,
 }: ProductoModalProps) {
+  const { data: categorias = [] } = useAllCategorias();
+  const { data: ingredientesDisponibles = [] } = useAllIngredientes();
+  const { data: unidadesMedida = [] } = useUnidadesMedida();
+
   const [nombre, setNombre] = useState(productoEditing?.nombre ?? "");
   const [descripcion, setDescripcion] = useState(
     productoEditing?.descripcion ?? "",
@@ -56,17 +60,12 @@ export function ProductoModal({
   );
   const [ingredientes, setIngredientes] = useState<IngredienteInput[]>(
     productoEditing?.ingredientes.map((i) => ({
-      ingrediente_id: i.ingrediente_id,
-      cantidad: i.cantidad,
-      unidad_medida_id: i.unidad_medida_id,
+      ingrediente_id: i.id,
+      cantidad: i.cantidad ?? 1,
+      unidad_medida_id: i.unidad_medida_id ?? unidadesMedida[0]?.id ?? 1,
       es_removible: i.es_removible,
     })) ?? [],
   );
-
-  // ─── Queries para datos de referencia ───────────────────────────────────
-  const { data: categorias = [] } = useAllCategorias();
-  const { data: ingredientesDisponibles = [] } = useAllIngredientes();
-  const { data: unidadesMedida = [] } = useUnidadesMedida();
 
   // ─── Handlers de categorías ─────────────────────────────────────────────
   const handleToggleCategoria = (id: number) => {

@@ -156,8 +156,8 @@ export function ProductosTable({
         return (
           <div className="flex flex-wrap gap-1">
             {ingredientes.slice(0, 3).map((i) => (
-              <Badge key={i.ingrediente_id} variant="default">
-                {i.ingrediente_nombre}
+              <Badge key={i.id} variant="default">
+                {i.nombre}
               </Badge>
             ))}
             {ingredientes.length > 3 && (
