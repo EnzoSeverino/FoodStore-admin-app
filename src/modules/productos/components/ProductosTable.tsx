@@ -50,10 +50,10 @@ export function ProductosTable({
         ).filter(Boolean);
         return (
           <div className="flex gap-1">
-            {imagenes.slice(0, 3).map((img, idx) => (
+            {urls.slice(0, 3).map((url, idx) => (
               <img
                 key={idx}
-                src={img.url}
+                src={url}
                 alt={`Producto ${idx + 1}`}
                 className="h-12 w-12 rounded-lg object-cover border border-slate-200"
               />
