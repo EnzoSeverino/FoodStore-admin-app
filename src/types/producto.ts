@@ -31,15 +31,14 @@ export interface IngredienteUpdate {
 
 // ─── Producto-Ingrediente (relación N:M con datos)
 export interface ProductoIngrediente {
-    ingrediente_id: number
-    ingrediente_nombre: string
-    cantidad: number
-    unidad_medida_id: number
-    unidad_simbolo: string
+    id: number                       
+    nombre: string                   
+    cantidad: number | null          
+    unidad_medida_id: number | null  
     es_removible: boolean
 }
 
-// ─── Categoría simple (para mostrar dentro de un producto)
+// ─── Categoría simple
 export interface CategoriaSimple {
     id: number
     nombre: string
@@ -52,7 +51,7 @@ export interface Producto {
     nombre: string
     descripcion: string | null
     precio_base: number
-    imagenes_url: string[] | null     
+    imagenes_url: { url: string; public_id: string | null }[] | null 
     unidad_venta_id: number | null    
     unidad_venta: UnidadMedida | null 
     stock_cantidad: number

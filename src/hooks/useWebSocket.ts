@@ -66,8 +66,6 @@ export function useWebSocket({
         const connect = () => {
             if (cancelled) return
 
-            // La cookie httpOnly viaja automáticamente en el handshake HTTP → WS.
-            // No hace falta pasar el token manualmente.
             const url = `${getWsUrl()}?token=${encodeURIComponent(token)}`
 
             const ws = new WebSocket(url)

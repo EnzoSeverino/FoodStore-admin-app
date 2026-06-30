@@ -9,7 +9,7 @@ Permite a administradores, gestores de stock y gestores de pedidos gestionar el 
 - **Vite** — build tool y dev server
 - **Tailwind CSS** — estilos utility-first
 - **TanStack Query v5** — fetching y caché de datos del servidor
-- **Zustand** — estado global del cliente (auth, carrito, WebSocket)
+- **Zustand** — estado global del cliente (auth, WebSocket)
 - **Axios** — cliente HTTP con interceptors JWT
 - **Recharts** — gráficos del dashboard
 - **Lucide React** — iconografía

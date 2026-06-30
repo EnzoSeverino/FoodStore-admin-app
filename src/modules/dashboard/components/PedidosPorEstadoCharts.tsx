@@ -88,7 +88,6 @@ export function PedidosPorEstadoChart() {
             outerRadius={100}
             paddingAngle={2}
             dataKey="value"
-            // ← sin label para evitar superposición
           >
             {chartData.map((entry, index) => (
               <Cell

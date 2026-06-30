@@ -37,7 +37,7 @@ export function StockTable({ data, onToggleDisponibilidad }: StockTableProps) {
         const url = typeof first === 'string' ? first : first?.url || first?.secure_url || '';
         return (
           <img
-            src={url}
+            src={imagenes[0].url}
             alt="Producto"
             className="h-12 w-12 rounded-lg object-cover border border-slate-200"
           />

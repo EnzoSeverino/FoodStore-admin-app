@@ -74,12 +74,26 @@ apiClient.interceptors.response.use(
         }
 
         // ── Otros errores: extraer mensaje del body FastAPI
-        const detail =
-            (error.response?.data as { detail?: string })?.detail ??
-            error.message ??
-            'Error desconocido'
+        const responseData = error.response?.data as { detail?: unknown }
+        const detail = responseData?.detail
 
-        return Promise.reject(new Error(detail))
+        let mensaje: string
+
+        if (typeof detail === 'string') {
+            // Error simple: { detail: "mensaje" }
+            mensaje = detail
+        } else if (Array.isArray(detail)) {
+            // Error de validación Pydantic: array de { loc, msg, type }
+            mensaje = detail
+                .map((e: { loc?: string[]; msg?: string }) =>
+                e.loc ? `${e.loc.slice(1).join('.')}: ${e.msg}` : e.msg ?? 'Error desconocido'
+                )
+                .join(' | ')
+        } else {
+            mensaje = error.message ?? 'Error desconocido'
+        }
+
+        return Promise.reject(new Error(mensaje))
     },
 )
 

@@ -50,10 +50,10 @@ export function ProductosTable({
         ).filter(Boolean);
         return (
           <div className="flex gap-1">
-            {urls.slice(0, 3).map((url, idx) => (
+            {imagenes.slice(0, 3).map((img, idx) => (
               <img
                 key={idx}
-                src={url}
+                src={img.url}
                 alt={`Producto ${idx + 1}`}
                 className="h-12 w-12 rounded-lg object-cover border border-slate-200"
               />
@@ -160,8 +160,8 @@ export function ProductosTable({
         return (
           <div className="flex flex-wrap gap-1">
             {ingredientes.slice(0, 3).map((i) => (
-              <Badge key={i.ingrediente_id} variant="default">
-                {i.ingrediente_nombre}
+              <Badge key={i.id} variant="default">
+                {i.nombre}
               </Badge>
             ))}
             {ingredientes.length > 3 && (
