@@ -1,5 +1,4 @@
-// ─── Catálogo de Estados
-export type CodigoEstado =
+﻿export type CodigoEstado =
     | 'PENDIENTE'
     | 'CONFIRMADO'
     | 'EN_PREP'
@@ -14,7 +13,6 @@ export interface EstadoPedido {
     es_terminal: boolean
 }
 
-// ─── Detalle del Pedido
 export interface DetallePedidoRead {
     id: number
     producto_id: number
@@ -26,7 +24,6 @@ export interface DetallePedidoRead {
     personalizacion: number[] | null
 }
 
-// ─── Historial de Estados (append-only, audit trail)
 export interface HistorialEstadoPedido {
     id: number
     pedido_id: number
@@ -39,7 +36,6 @@ export interface HistorialEstadoPedido {
     estado_nuevo: { id: number; codigo: CodigoEstado; nombre: string; es_terminal: boolean }
 }
 
-// ─── Pedido (listado)
 export interface PedidoRead {
     id: number
     usuario_id: number
@@ -55,13 +51,11 @@ export interface PedidoRead {
     forma_pago: { id: number; nombre: string; codigo: string } | null
 }
 
-// ─── Pedido (detalle completo)
 export interface PedidoDetail extends PedidoRead {
     detalles: DetallePedidoRead[]
     historial_estados: HistorialEstadoPedido[]
 }
 
-// ─── Body para PATCH /api/v1/pedidos/{id}/estado
 export interface AvanzarEstadoRequest {
     nuevo_estado_id: number
     observacion?: string | null

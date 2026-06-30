@@ -1,8 +1,7 @@
-import { useState, useRef } from "react";
+﻿import { useState, useRef } from "react";
 import { uploadImage, deleteImagen } from "@/api/uploadsApi";
 import type { CloudinaryResponse } from "@/types/producto";
 
-// ─── ImageUploader ──────────────────────────────────────────────────────────
 interface ImageUploaderProps {
   currentImageUrl?: string | null;
   currentPublicId?: string | null;
@@ -29,7 +28,6 @@ export function ImageUploader({
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // ─── Validar archivo antes de subir ─────────────────────────────────────
   const validateFile = (file: File): string | null => {
     if (!ALLOWED_TYPES.includes(file.type)) {
       return `Formato no válido. Usá JPG, PNG o WebP.`;
@@ -40,7 +38,6 @@ export function ImageUploader({
     return null;
   };
 
-  // ─── Manejar selección de archivo ───────────────────────────────────────
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -55,40 +52,31 @@ export function ImageUploader({
       return;
     }
 
-    // Preview local inmediato (antes del upload)
     const localPreview = URL.createObjectURL(file);
     setPreviewUrl(localPreview);
     setIsUploading(true);
 
     try {
-      // Subir al backend → Cloudinary
       const response: CloudinaryResponse = await uploadImage(file);
 
-      // Actualizar preview con la URL real de Cloudinary
       setPreviewUrl(response.secure_url);
 
-      // Notificar al padre
       onUpload(response.secure_url, response.public_id);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al subir la imagen");
-      setPreviewUrl(currentImageUrl ?? null); // revertir preview
+      setPreviewUrl(currentImageUrl ?? null);
     } finally {
       setIsUploading(false);
 
-      // Limpiar el input para que el usuario pueda seleccionar el mismo archivo de nuevo
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
-  // ─── Manejar eliminación de imagen ──────────────────────────────────────
   const handleRemove = async () => {
-    // Si hay un public_id, eliminar la imagen de Cloudinary
     if (currentPublicId) {
       try {
         await deleteImagen(currentPublicId);
       } catch {
-        // Si falla la eliminación en Cloudinary, igual limpiamos la UI.
-        // El admin puede reintentar o eliminar manualmente desde Cloudinary.
       }
     }
 
@@ -96,7 +84,6 @@ export function ImageUploader({
     onRemove();
   };
 
-  // ─── Abrir file picker ──────────────────────────────────────────────────
   const handleSelectClick = () => {
     fileInputRef.current?.click();
   };
@@ -104,11 +91,8 @@ export function ImageUploader({
   return (
     <div className="space-y-3">
       <label className="block text-sm font-medium text-slate-700">Imagen</label>
-
-      {/* Preview o placeholder */}
       <div className="flex items-center gap-4">
         {previewUrl ? (
-          // Hay imagen: mostrar preview + botones
           <div className="relative group">
             <img
               src={previewUrl}
@@ -124,7 +108,6 @@ export function ImageUploader({
             )}
           </div>
         ) : (
-          // No hay imagen: mostrar placeholder
           <div
             onClick={disabled || isUploading ? undefined : handleSelectClick}
             className={`flex h-24 w-24 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 transition-colors 
@@ -138,8 +121,6 @@ export function ImageUploader({
             <span className="text-2xl text-slate-400">+</span>
           </div>
         )}
-
-        {/* Botones de acción */}
         <div className="flex flex-col gap-2">
           <button
             type="button"
@@ -162,8 +143,6 @@ export function ImageUploader({
           )}
         </div>
       </div>
-
-      {/* Input de archivo oculto */}
       <input
         ref={fileInputRef}
         type="file"
@@ -171,11 +150,7 @@ export function ImageUploader({
         onChange={handleFileChange}
         className="hidden"
       />
-
-      {/* Mensaje de error */}
       {error && <p className="text-xs text-red-600">{error}</p>}
-
-      {/* Hint de formatos aceptados */}
       <p className="text-xs text-slate-400">
         JPG, PNG o WebP. Máximo {MAX_SIZE_MB} MB.
       </p>

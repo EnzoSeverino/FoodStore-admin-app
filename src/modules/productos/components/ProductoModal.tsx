@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { ImageGallery } from "./ImageGallery";
 import { useAllCategorias } from "@/modules/categorias/hooks/useCategorias";
 import { useAllIngredientes } from "@/modules/ingredientes/hooks/useIngredientes";
@@ -67,7 +67,6 @@ export function ProductoModal({
     })) ?? [],
   );
 
-  // ─── Handlers de categorías ─────────────────────────────────────────────
   const handleToggleCategoria = (id: number) => {
     setCategoriasSeleccionadas((prev) => {
       const existe = prev.find((c) => c.id === id);
@@ -82,7 +81,6 @@ export function ProductoModal({
     );
   };
 
-  // ─── Handlers de ingredientes ───────────────────────────────────────────
   const handleToggleIngrediente = (ingredienteId: number) => {
     setIngredientes((prev) => {
       const existe = prev.find((i) => i.ingrediente_id === ingredienteId);
@@ -113,7 +111,6 @@ export function ProductoModal({
     );
   };
 
-  // ─── Submit ─────────────────────────────────────────────────────────────
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -142,7 +139,6 @@ export function ProductoModal({
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Nombre */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Nombre
@@ -157,8 +153,6 @@ export function ProductoModal({
               placeholder="Nombre del producto"
             />
           </div>
-
-          {/* Descripción */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Descripción
@@ -172,8 +166,6 @@ export function ProductoModal({
               placeholder="Descripción opcional"
             />
           </div>
-
-          {/* Precio y Stock */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700">
@@ -208,8 +200,6 @@ export function ProductoModal({
               />
             </div>
           </div>
-
-          {/* Disponible */}
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
@@ -226,8 +216,6 @@ export function ProductoModal({
               Disponible para la venta
             </label>
           </div>
-
-          {/* Unidad de Venta */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Unidad de Venta
@@ -251,15 +239,11 @@ export function ProductoModal({
               Ej: "kg" para vender por peso, "L" para vender por volumen
             </p>
           </div>
-
-          {/* Galería de Imágenes (Cloudinary) */}
           <ImageGallery
             imagenes={imagenesUrl}
             onImagesChange={setImagenesUrl}
             disabled={isLoading}
           />
-
-          {/* Categorías */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               Categorías
@@ -311,8 +295,6 @@ export function ProductoModal({
               )}
             </div>
           </div>
-
-          {/* Ingredientes */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               Ingredientes
@@ -350,8 +332,6 @@ export function ProductoModal({
                           )}
                         </label>
                       </div>
-
-                      {/* Campos adicionales si está seleccionado */}
                       {seleccionado && (
                         <div className="ml-6 grid grid-cols-3 gap-2">
                           <div>
@@ -429,8 +409,6 @@ export function ProductoModal({
               pedido
             </p>
           </div>
-
-          {/* Botones de acción */}
           <div className="flex justify-end gap-2 pt-4 border-t border-slate-200">
             <button
               type="button"

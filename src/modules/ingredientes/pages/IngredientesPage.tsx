@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import {
   useIngredientes,
@@ -24,33 +24,27 @@ export function IngredientesPage() {
   const isAdmin = hasRole(user, "ADMIN");
   const toast = useToast();
 
-  // ─── Paginación ─────────────────────────────────────────────────────────
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
-  // ─── Queries ────────────────────────────────────────────────────────────
   const {
     data: ingredientesData,
     isLoading,
     isError,
   } = useIngredientes(page, pageSize);
 
-  // ─── Mutations ──────────────────────────────────────────────────────────
   const createMutation = useCreateIngrediente();
   const updateMutation = useUpdateIngrediente();
   const deleteMutation = useDeleteIngrediente();
 
-  // ─── Estado del modal ───────────────────────────────────────────────────
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ingredienteEditing, setIngredienteEditing] =
     useState<Ingrediente | null>(null);
 
-  // ─── Estado del diálogo de confirmación ─────────────────────────────────
   const [ingredienteToDelete, setIngredienteToDelete] = useState<number | null>(
     null,
   );
 
-  // ─── Handlers del modal ─────────────────────────────────────────────────
   const handleOpenCreate = () => {
     setIngredienteEditing(null);
     setIsModalOpen(true);
@@ -66,7 +60,6 @@ export function IngredientesPage() {
     setIngredienteEditing(null);
   };
 
-  // ─── Submit del formulario (crear o actualizar) ────────────────────────
   const handleSubmit = async (data: IngredienteCreate | IngredienteUpdate) => {
     try {
       if (ingredienteEditing) {
@@ -86,7 +79,6 @@ export function IngredientesPage() {
     }
   };
 
-  // ─── Handlers de eliminación ────────────────────────────────────────────
   const handleDeleteRequest = (id: number) => {
     setIngredienteToDelete(id);
   };
@@ -107,7 +99,6 @@ export function IngredientesPage() {
     }
   };
 
-  // ─── Loading state ──────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -122,7 +113,6 @@ export function IngredientesPage() {
     );
   }
 
-  // ─── Error state ────────────────────────────────────────────────────────
   if (isError) {
     return (
       <div className="space-y-6">
@@ -147,7 +137,6 @@ export function IngredientesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Ingredientes</h1>
@@ -164,8 +153,6 @@ export function IngredientesPage() {
           </button>
         )}
       </div>
-
-      {/* Tabla o EmptyState */}
       {ingredientes.length === 0 ? (
         <EmptyState
           icon="⚗"
@@ -182,8 +169,6 @@ export function IngredientesPage() {
             onEdit={handleOpenEdit}
             onDelete={handleDeleteRequest}
           />
-
-          {/* Paginación */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <p className="text-sm text-slate-500">
@@ -211,7 +196,6 @@ export function IngredientesPage() {
         </>
       )}
 
-      {/* Modal de crear/editar */}
       <IngredienteModal
         key={ingredienteEditing?.id ?? "new"}
         isOpen={isModalOpen}
@@ -220,8 +204,6 @@ export function IngredientesPage() {
         ingredienteEditing={ingredienteEditing}
         isLoading={createMutation.isPending || updateMutation.isPending}
       />
-
-      {/* Diálogo de confirmación para eliminar */}
       <ConfirmDialog
         isOpen={ingredienteToDelete !== null}
         onClose={() => setIngredienteToDelete(null)}

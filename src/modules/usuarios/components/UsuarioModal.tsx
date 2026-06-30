@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import type { Usuario, UsuarioCreate, UsuarioUpdate } from "@/types/usuario";
 
 interface UsuarioModalProps {
@@ -55,7 +55,6 @@ export function UsuarioModal({
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Nombre */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Nombre
@@ -70,8 +69,6 @@ export function UsuarioModal({
               placeholder="Nombre completo"
             />
           </div>
-
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Email
@@ -86,8 +83,6 @@ export function UsuarioModal({
               placeholder="email@ejemplo.com"
             />
           </div>
-
-          {/* Contraseña (solo al crear) */}
           {creating && (
             <div>
               <label className="block text-sm font-medium text-slate-700">
@@ -105,8 +100,6 @@ export function UsuarioModal({
               />
             </div>
           )}
-
-          {/* Rol */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Rol
@@ -123,8 +116,6 @@ export function UsuarioModal({
               <option value="PEDIDOS">Gestor de Pedidos</option>
             </select>
           </div>
-
-          {/* Botones */}
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"

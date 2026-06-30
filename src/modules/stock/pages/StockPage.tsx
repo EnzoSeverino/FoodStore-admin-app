@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import {
   useStockProductos,
@@ -17,18 +17,15 @@ export function StockPage() {
   const isStock = hasRole(user, "STOCK");
   const toast = useToast();
 
-  // ─── Paginación ─────────────────────────────────────────────────────────
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
-  // ─── Filtros ────────────────────────────────────────────────────────────
   const [filtroDisponible, setFiltroDisponible] = useState<boolean | undefined>(
     undefined,
   );
   const [busqueda, setBusqueda] = useState("");
   const busquedaDebounced = useDebounce(busqueda, 400);
 
-  // ─── Queries ────────────────────────────────────────────────────────────
   const {
     data: stockData,
     isLoading,
@@ -40,10 +37,8 @@ export function StockPage() {
     search: busquedaDebounced || undefined,
   });
 
-  // ─── Mutations ──────────────────────────────────────────────────────────
   const updateDisponibilidadMutation = useUpdateStockDisponibilidad();
 
-  // ─── Handler de toggle disponibilidad ───────────────────────────────────
   const handleToggleDisponibilidad = async (
     id: number,
     disponible: boolean,
@@ -64,7 +59,6 @@ export function StockPage() {
     }
   };
 
-  // ─── Reset de página al cambiar filtros ─────────────────────────────────
   const handleFiltroDisponible = (value: boolean | undefined) => {
     setFiltroDisponible(value);
     setPage(1);
@@ -75,7 +69,6 @@ export function StockPage() {
     setPage(1);
   };
 
-  // ─── Sin permisos ───────────────────────────────────────────────────────
   if (!isAdmin && !isStock) {
     return (
       <div className="space-y-6">
@@ -96,7 +89,6 @@ export function StockPage() {
     );
   }
 
-  // ─── Loading state ──────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -113,7 +105,6 @@ export function StockPage() {
     );
   }
 
-  // ─── Error state ────────────────────────────────────────────────────────
   if (isError) {
     return (
       <div className="space-y-6">
@@ -138,17 +129,13 @@ export function StockPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Gestión de Stock</h1>
         <p className="text-sm text-slate-500">
           Control de disponibilidad de productos
         </p>
       </div>
-
-      {/* Filtros */}
       <div className="flex flex-wrap gap-4 rounded-xl border border-slate-200 bg-white p-4">
-        {/* Búsqueda */}
         <div className="flex-1 min-w-[200px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">
             Buscar
@@ -161,8 +148,6 @@ export function StockPage() {
             className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none"
           />
         </div>
-
-        {/* Filtro por disponibilidad */}
         <div className="min-w-[150px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">
             Disponibilidad
@@ -188,8 +173,6 @@ export function StockPage() {
             <option value="false">No disponibles</option>
           </select>
         </div>
-
-        {/* Contador de resultados */}
         <div className="flex items-end">
           <p className="text-sm text-slate-500">
             {totalItems} {totalItems === 1 ? "producto" : "productos"}{" "}
@@ -197,8 +180,6 @@ export function StockPage() {
           </p>
         </div>
       </div>
-
-      {/* Tabla o EmptyState */}
       {productos.length === 0 ? (
         <EmptyState
           icon="📦"
@@ -215,8 +196,6 @@ export function StockPage() {
             data={productos}
             onToggleDisponibilidad={handleToggleDisponibilidad}
           />
-
-          {/* Paginación */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <p className="text-sm text-slate-500">

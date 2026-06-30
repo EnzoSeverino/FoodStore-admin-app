@@ -1,9 +1,7 @@
-// ─── Skeleton Loader ────────────────────────────────────────────────────────
-interface SkeletonLoaderProps {
+﻿interface SkeletonLoaderProps {
     className?: string
 }
 
-// ─── SkeletonLoader (bloque genérico) ───────────────────────────────────────
 export function SkeletonLoader({ className = 'h-4 w-full' }: SkeletonLoaderProps) {
     return (
         <div
@@ -13,7 +11,6 @@ export function SkeletonLoader({ className = 'h-4 w-full' }: SkeletonLoaderProps
     )
 }
 
-// ─── SkeletonTable ──────────────────────────────────────────────────────────
 interface SkeletonTableProps {
     rows?: number
     columns?: number
@@ -22,7 +19,6 @@ interface SkeletonTableProps {
 export function SkeletonTable({ rows = 5, columns = 4 }: SkeletonTableProps) {
     return (
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-            {/* Header */}
             <div className="border-b border-slate-200 bg-slate-50 px-5 py-3.5">
                 <div className="flex gap-8">
                     {Array.from({ length: columns }).map((_, i) => (
@@ -30,8 +26,6 @@ export function SkeletonTable({ rows = 5, columns = 4 }: SkeletonTableProps) {
                     ))}
                 </div>
             </div>
-
-            {/* Rows */}
             <div className="divide-y divide-slate-100">
                 {Array.from({ length: rows }).map((_, rowIdx) => (
                     <div key={rowIdx} className="flex gap-8 px-5 py-4">
@@ -45,7 +39,6 @@ export function SkeletonTable({ rows = 5, columns = 4 }: SkeletonTableProps) {
     )
 }
 
-// ─── SkeletonCard ───────────────────────────────────────────────────────────
 export function SkeletonCard() {
     return (
         <div className="rounded-xl border border-slate-200 bg-white p-5">

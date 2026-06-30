@@ -1,4 +1,4 @@
-import {
+﻿import {
   useReactTable,
   getCoreRowModel,
   flexRender,
@@ -15,7 +15,6 @@ interface UsuariosTableProps {
 
 const columnHelper = createColumnHelper<Usuario>();
 
-// ─── Configuración de badges por rol ────────────────────────────────────────
 const rolVariant: Record<
   string,
   "danger" | "warning" | "info" | "success" | "default"

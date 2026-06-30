@@ -28,11 +28,9 @@ export function ProductosPage() {
   const isStock = hasRole(user, "STOCK");
   const toast = useToast();
 
-  // ─── Paginación ─────────────────────────────────────────────────────────
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
-  // ─── Filtros ────────────────────────────────────────────────────────────
   const [filtroCategoria, setFiltroCategoria] = useState<number | undefined>(
     undefined,
   );
@@ -42,7 +40,6 @@ export function ProductosPage() {
   const [busqueda, setBusqueda] = useState("");
   const busquedaDebounced = useDebounce(busqueda, 400);
 
-  // ─── Queries ────────────────────────────────────────────────────────────
   const {
     data: productosData,
     isLoading,
@@ -56,20 +53,16 @@ export function ProductosPage() {
   });
   const { data: categorias = [] } = useAllCategorias();
 
-  // ─── Mutations ──────────────────────────────────────────────────────────
   const createMutation = useCreateProducto();
   const updateMutation = useUpdateProducto();
   const deleteMutation = useDeleteProducto();
   const updateDisponibilidadMutation = useUpdateDisponibilidad();
 
-  // ─── Estado del modal ───────────────────────────────────────────────────
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productoEditing, setProductoEditing] = useState<Producto | null>(null);
 
-  // ─── Estado del diálogo de confirmación ─────────────────────────────────
   const [productoToDelete, setProductoToDelete] = useState<number | null>(null);
 
-  // ─── Handlers del modal ─────────────────────────────────────────────────
   const handleOpenCreate = () => {
     setProductoEditing(null);
     setIsModalOpen(true);
@@ -85,7 +78,6 @@ export function ProductosPage() {
     setProductoEditing(null);
   };
 
-  // ─── Submit del formulario (crear o actualizar) ────────────────────────
   const handleSubmit = async (data: ProductoCreate | ProductoUpdate) => {
     try {
       if (productoEditing) {
@@ -103,7 +95,6 @@ export function ProductosPage() {
     }
   };
 
-  // ─── Handlers de eliminación ────────────────────────────────────────────
   const handleDeleteRequest = (id: number) => {
     setProductoToDelete(id);
   };
@@ -124,7 +115,6 @@ export function ProductosPage() {
     }
   };
 
-  // ─── Handler de toggle disponibilidad ───────────────────────────────────
   const handleToggleDisponibilidad = async (
     id: number,
     disponible: boolean,
@@ -145,7 +135,6 @@ export function ProductosPage() {
     }
   };
 
-  // ─── Reset de página al cambiar filtros ─────────────────────────────────
   const handleFiltroCategoria = (value: number | undefined) => {
     setFiltroCategoria(value);
     setPage(1);
@@ -161,7 +150,6 @@ export function ProductosPage() {
     setPage(1);
   };
 
-  // ─── Loading state ──────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -176,7 +164,6 @@ export function ProductosPage() {
     );
   }
 
-  // ─── Error state ────────────────────────────────────────────────────────
   if (isError) {
     return (
       <div className="space-y-6">
@@ -199,7 +186,6 @@ export function ProductosPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Productos</h1>
@@ -217,9 +203,7 @@ export function ProductosPage() {
         )}
       </div>
 
-      {/* Filtros */}
       <div className="flex flex-wrap gap-4 rounded-xl border border-slate-200 bg-white p-4">
-        {/* Búsqueda */}
         <div className="flex-1 min-w-[200px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">
             Buscar
@@ -233,7 +217,6 @@ export function ProductosPage() {
           />
         </div>
 
-        {/* Filtro por categoría */}
         <div className="min-w-[150px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">
             Categoría
@@ -256,7 +239,6 @@ export function ProductosPage() {
           </select>
         </div>
 
-        {/* Filtro por disponibilidad */}
         <div className="min-w-[150px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">
             Disponibilidad
@@ -284,7 +266,6 @@ export function ProductosPage() {
         </div>
       </div>
 
-      {/* Tabla o EmptyState */}
       {productos.length === 0 ? (
         <EmptyState
           icon="📦"
@@ -304,7 +285,6 @@ export function ProductosPage() {
             onToggleDisponibilidad={handleToggleDisponibilidad}
           />
 
-          {/* Paginación */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <p className="text-sm text-slate-500">
@@ -331,7 +311,6 @@ export function ProductosPage() {
         </>
       )}
 
-      {/* Modal de crear/editar */}
       <ProductoModal
         key={productoEditing?.id ?? "new"}
         isOpen={isModalOpen}
@@ -341,7 +320,6 @@ export function ProductosPage() {
         isLoading={createMutation.isPending || updateMutation.isPending}
       />
 
-      {/* Diálogo de confirmación para eliminar */}
       <ConfirmDialog
         isOpen={productoToDelete !== null}
         onClose={() => setProductoToDelete(null)}

@@ -1,6 +1,5 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 
-// ─── EmptyState ─────────────────────────────────────────────────────────────
 interface EmptyStateProps {
   icon?: string;
   title: string;
@@ -20,18 +19,11 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-16 text-center">
-      {/* Icono */}
       <span className="mb-4 text-4xl">{icon}</span>
-
-      {/* Título */}
       <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-
-      {/* Descripción opcional */}
       {description && (
         <p className="mt-1 max-w-sm text-sm text-slate-500">{description}</p>
       )}
-
-      {/* Botón de acción opcional */}
       {actionLabel && onAction && (
         <button
           onClick={onAction}

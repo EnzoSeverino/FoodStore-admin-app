@@ -1,4 +1,4 @@
-import {
+﻿import {
   useEffect,
   useState,
   useCallback,
@@ -7,7 +7,6 @@ import {
   type ReactNode,
 } from "react";
 
-// ─── Tipos ──────────────────────────────────────────────────────────────────
 type ToastType = "success" | "error" | "info" | "warning";
 
 interface Toast {
@@ -20,10 +19,8 @@ interface ToastContextType {
   showToast: (type: ToastType, message: string) => void;
 }
 
-// ─── Context ────────────────────────────────────────────────────────────────
 const ToastContext = createContext<ToastContextType | null>(null);
 
-// ─── Hook useToast ──────────────────────────────────────────────────────────
 // eslint-disable-next-line react-refresh/only-export-components
 export function useToast() {
   const context = useContext(ToastContext);
@@ -39,7 +36,6 @@ export function useToast() {
   };
 }
 
-// ─── Estilos por tipo ───────────────────────────────────────────────────────
 const toastStyles: Record<ToastType, string> = {
   success: "border-green-200 bg-green-50 text-green-800",
   error: "border-red-200 bg-red-50 text-red-800",
@@ -54,7 +50,6 @@ const toastIcons: Record<ToastType, string> = {
   warning: "⚠",
 };
 
-// ─── Componente ToastItem ───────────────────────────────────────────────────
 function ToastItem({
   toast,
   onDismiss,
@@ -62,7 +57,6 @@ function ToastItem({
   toast: Toast;
   onDismiss: (id: number) => void;
 }) {
-  // Auto-dismiss: el toast desaparece solo después de 4 segundos
   useEffect(() => {
     const timer = setTimeout(() => onDismiss(toast.id), 4000);
     return () => clearTimeout(timer);
@@ -86,11 +80,9 @@ function ToastItem({
   );
 }
 
-// ─── ToastProvider ──────────────────────────────────────────────────────────
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  // ID autoincremental para identificar cada toast
   const [nextId, setNextId] = useState(0);
 
   const showToast = useCallback(
@@ -109,8 +101,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-
-      {/* Contenedor de toasts — esquina superior derecha */}
       <div className="fixed right-4 top-4 z-100 flex flex-col gap-2 max-w-sm">
         {toasts.map((toast) => (
           <ToastItem key={toast.id} toast={toast} onDismiss={dismissToast} />

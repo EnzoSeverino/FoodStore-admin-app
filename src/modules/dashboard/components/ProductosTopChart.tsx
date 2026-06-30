@@ -1,4 +1,4 @@
-import {
+﻿import {
   BarChart,
   Bar,
   XAxis,
@@ -12,9 +12,7 @@ import { useProductosTop } from "../hooks/useDashboard";
 import { SkeletonLoader } from "@/components/ui/SkeletonLoader";
 import { EmptyState } from "@/components/ui/EmptyState";
 
-// ─── ProductosTopChart ──────────────────────────────────────────────────────
 
-// Colores para el degradado de barras (del más oscuro al más claro)
 const barColors = [
   "#1e40af", // blue-800 — posición 1
   "#2563eb", // blue-600 — posición 2
@@ -29,12 +27,10 @@ const barColors = [
 export function ProductosTopChart() {
   const { data, isLoading, isError } = useProductosTop(10);
 
-  // ─── Formatear monto para tooltip ───────────────────────────────────────
   const formatCurrency = (value: number): string => {
     return `$${value.toLocaleString("es-AR")}`;
   };
 
-  // ─── Loading ────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-6">
@@ -44,7 +40,6 @@ export function ProductosTopChart() {
     );
   }
 
-  // ─── Error ──────────────────────────────────────────────────────────────
   if (isError || !data) {
     return (
       <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
@@ -55,7 +50,6 @@ export function ProductosTopChart() {
     );
   }
 
-  // ─── Empty ──────────────────────────────────────────────────────────────
   if (data.length === 0) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-6">
@@ -71,14 +65,12 @@ export function ProductosTopChart() {
     );
   }
 
-  // ─── Transformar datos para recharts ────────────────────────────────────
   const chartData = data.map((item) => ({
     nombre: item.nombre,
     cantidad: item.cantidad_total,
     monto: item.monto_total,
   }));
 
-  // Altura dinámica: 40px por cada barra + padding
   const chartHeight = Math.max(300, data.length * 40 + 60);
 
   return (
@@ -93,22 +85,17 @@ export function ProductosTopChart() {
           layout="vertical"
           margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
         >
-          {/* Grilla vertical de fondo */}
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="#e2e8f0"
             horizontal={false}
           />
-
-          {/* Eje X (horizontal): cantidad vendida */}
           <XAxis
             type="number"
             tick={{ fontSize: 11, fill: "#64748b" }}
             tickLine={false}
             axisLine={{ stroke: "#e2e8f0" }}
           />
-
-          {/* Eje Y (vertical): nombre del producto */}
           <YAxis
             type="category"
             dataKey="nombre"
@@ -117,8 +104,6 @@ export function ProductosTopChart() {
             axisLine={{ stroke: "#e2e8f0" }}
             width={80}
           />
-
-          {/* Tooltip al hacer hover */}
           <Tooltip
             contentStyle={{
               borderRadius: "8px",
@@ -131,8 +116,6 @@ export function ProductosTopChart() {
             }}
             labelFormatter={(label) => `Producto: ${label}`}
           />
-
-          {/* Barras horizontales con degradado de color */}
           <Bar dataKey="cantidad" radius={[0, 4, 4, 0]}>
             {chartData.map((_, index) => (
               <Cell

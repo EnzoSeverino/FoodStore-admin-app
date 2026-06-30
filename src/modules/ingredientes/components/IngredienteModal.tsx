@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import type {
   Ingrediente,
   IngredienteCreate,
@@ -54,7 +54,6 @@ export function IngredienteModal({
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Campo: Nombre */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Nombre
@@ -69,8 +68,6 @@ export function IngredienteModal({
               placeholder="Nombre del ingrediente"
             />
           </div>
-
-          {/* Campo: Descripción */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Descripción
@@ -84,8 +81,6 @@ export function IngredienteModal({
               placeholder="Descripción opcional"
             />
           </div>
-
-          {/* Campo: Stock */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Stock
@@ -103,8 +98,6 @@ export function IngredienteModal({
               Cantidad disponible en inventario
             </p>
           </div>
-
-          {/* Campo: Es Alérgeno */}
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
@@ -127,8 +120,6 @@ export function IngredienteModal({
               el catálogo
             </p>
           )}
-
-          {/* Botones de acción */}
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"

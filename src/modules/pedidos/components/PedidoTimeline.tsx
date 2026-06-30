@@ -1,11 +1,10 @@
-import { Badge } from "@/components/ui/Badge";
+﻿import { Badge } from "@/components/ui/Badge";
 import type { HistorialEstadoPedido, CodigoEstado } from "@/types/pedido";
 
 interface PedidoTimelineProps {
   historial: HistorialEstadoPedido[];
 }
 
-// ─── Mapeo de estado → variante de Badge ────────────────────────────────────
 const estadoVariant: Record<
   CodigoEstado,
   "warning" | "info" | "success" | "danger"
@@ -17,7 +16,6 @@ const estadoVariant: Record<
   CANCELADO: "danger",
 };
 
-// ─── Labels legibles para cada estado ───────────────────────────────────────
 const estadoLabels: Record<CodigoEstado, string> = {
   PENDIENTE: "Pendiente",
   CONFIRMADO: "Confirmado",
@@ -26,7 +24,6 @@ const estadoLabels: Record<CodigoEstado, string> = {
   CANCELADO: "Cancelado",
 };
 
-// ─── Colores de la línea vertical según estado ──────────────────────────────
 const lineaColors: Record<CodigoEstado, string> = {
   PENDIENTE: "bg-yellow-300",
   CONFIRMADO: "bg-blue-300",
@@ -35,7 +32,6 @@ const lineaColors: Record<CodigoEstado, string> = {
   CANCELADO: "bg-red-300",
 };
 
-// ─── Colores del punto según estado ─────────────────────────────────────────
 const puntoColors: Record<CodigoEstado, string> = {
   PENDIENTE: "bg-yellow-500 ring-yellow-200",
   CONFIRMADO: "bg-blue-500 ring-blue-200",
@@ -62,9 +58,7 @@ export function PedidoTimeline({ historial }: PedidoTimelineProps) {
 
         return (
           <div key={entry.id} className="relative flex gap-4">
-            {/* Columna izquierda: línea vertical + punto */}
             <div className="flex flex-col items-center">
-              {/* Punto */}
               <div
                 className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full ring-4 ${puntoColors[entry.estado_nuevo.codigo]}`}
               >
@@ -72,18 +66,13 @@ export function PedidoTimeline({ historial }: PedidoTimelineProps) {
                   {entry.estado_nuevo.codigo.charAt(0)}
                 </span>
               </div>
-
-              {/* Línea vertical (excepto en el último) */}
               {!esUltimo && (
                 <div
                   className={`w-0.5 flex-1 ${lineaColors[entry.estado_nuevo.codigo]}`}
                 />
               )}
             </div>
-
-            {/* Columna derecha: contenido */}
             <div className={`flex-1 pb-8 ${esUltimo ? "pb-0" : ""}`}>
-              {/* Header: transición de estado */}
               <div className="flex items-center gap-2 flex-wrap">
                 {esPrimero ? (
                   <span className="text-xs text-slate-400">Creación</span>
@@ -99,8 +88,6 @@ export function PedidoTimeline({ historial }: PedidoTimelineProps) {
                   {estadoLabels[entry.estado_nuevo.codigo]}
                 </Badge>
               </div>
-
-              {/* Timestamp */}
               <p className="mt-1 text-xs text-slate-500">
                 {new Date(entry.fecha_cambio).toLocaleString("es-AR", {
                   day: "2-digit",
@@ -118,8 +105,6 @@ export function PedidoTimeline({ historial }: PedidoTimelineProps) {
                   <span className="ml-2 text-slate-400">· Sistema</span>
                 )}
               </p>
-
-              {/* Motivo (solo en cancelaciones) */}
               {esCancelacion && entry.observacion && (
                 <div className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2">
                   <p className="text-xs font-medium text-red-700 mb-0.5">

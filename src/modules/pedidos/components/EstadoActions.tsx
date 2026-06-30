@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useEstadosPosibles, useAvanzarEstado } from "../hooks/usePedidos";
 import { useToast } from "@/components/ui/Toast";
 import { Badge } from "@/components/ui/Badge";
@@ -46,7 +46,6 @@ export function EstadoActions({ pedido, onCancelarClick }: EstadoActionsProps) {
   );
   const avanzarMutation = useAvanzarEstado();
 
-  // ─── Leer el código del estado desde el objeto anidado ───────────────────
   const codigoActual = pedido.estado_actual?.codigo;
   const esTerminal =
     codigoActual === "ENTREGADO" || codigoActual === "CANCELADO";

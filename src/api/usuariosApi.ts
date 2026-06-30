@@ -1,10 +1,9 @@
-import apiClient from "./axiosInstance";
+﻿import apiClient from "./axiosInstance";
 import type { PaginatedResponse } from "@/types/api";
 import type { Usuario, UsuarioCreate, UsuarioUpdate } from "@/types/usuario";
 
 const ADMIN = '/admin'
 
-// ─── GET /api/v1/admin/usuarios
 export async function getUsuarios(
     page = 1,
     size = 20,
@@ -24,19 +23,16 @@ export async function getUsuarios(
     }
 }
 
-// ─── POST /api/v1/admin/usuarios
 export async function createUsuario(data: UsuarioCreate): Promise<Usuario> {
     const response = await apiClient.post<Usuario>(`${ADMIN}/usuarios`, data)
     return response.data
 }
 
-// ─── PUT /api/v1/admin/usuarios/{id}
 export async function updateUsuario(id: number, data: UsuarioUpdate): Promise<Usuario> {
     const response = await apiClient.put<Usuario>(`${ADMIN}/usuarios/${id}`, data)
     return response.data
 }
 
-// ─── DELETE /api/v1/admin/usuarios/{id}
 export async function deleteUsuario(id: number): Promise<void> {
     await apiClient.delete(`${ADMIN}/usuarios/${id}`)
 }

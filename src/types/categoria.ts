@@ -1,5 +1,4 @@
-// ─── Categoría
-export interface Categoria {
+﻿export interface Categoria {
     id: number
     nombre: string
     descripcion: string | null
@@ -10,7 +9,6 @@ export interface Categoria {
     deleted_at: string | null
 }
 
-// ─── Categoría Create
 export interface CategoriaCreate {
     nombre: string
     descripcion?: string
@@ -18,7 +16,6 @@ export interface CategoriaCreate {
     parent_id?: number | null
 }
 
-// ─── Categoría Update 
 export interface CategoriaUpdate {
     nombre?: string
     descripcion?: string

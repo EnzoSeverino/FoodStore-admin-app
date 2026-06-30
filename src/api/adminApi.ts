@@ -1,6 +1,5 @@
-import apiClient from "./axiosInstance";
+﻿import apiClient from "./axiosInstance";
 
-// ─── Tipos de respuesta de /estadisticas/*
 export interface DashboardTotals {
   total_productos: number
   total_categorias: number
@@ -27,7 +26,6 @@ export interface ProductoTop {
   monto_total: number
 }
 
-// ─── GET /api/v1/estadisticas/resumen
 export async function getDashboardTotals(): Promise<DashboardTotals> {
   const response = await apiClient.get<{
     total_productos: number
@@ -46,7 +44,6 @@ export async function getDashboardTotals(): Promise<DashboardTotals> {
   }
 }
 
-// ─── GET /api/v1/estadisticas/pedidos-por-estado
 export async function getPedidosPorEstado(): Promise<PedidosPorEstado[]> {
   const response = await apiClient.get<{ codigo: string; nombre: string; cantidad: number }[]>(
     '/estadisticas/pedidos-por-estado'
@@ -57,7 +54,6 @@ export async function getPedidosPorEstado(): Promise<PedidosPorEstado[]> {
   }))
 }
 
-// ─── GET /api/v1/estadisticas/ventas
 export async function getVentasPorPeriodo(dias = 30): Promise<VentasPorPeriodo[]> {
   const hasta = new Date()
   const desde = new Date()
@@ -76,7 +72,6 @@ export async function getVentasPorPeriodo(dias = 30): Promise<VentasPorPeriodo[]
   }))
 }
 
-// ─── GET /api/v1/estadisticas/productos-mas-vendidos
 export async function getProductosTop(limit = 10): Promise<ProductoTop[]> {
   const response = await apiClient.get<{ producto_id: number; nombre: string; total_vendido: number; total_ingresos: number }[]>(
     '/estadisticas/productos-mas-vendidos',

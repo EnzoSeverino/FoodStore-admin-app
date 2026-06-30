@@ -1,12 +1,10 @@
-// ─── Unidad de Medida
-export interface UnidadMedida {
+﻿export interface UnidadMedida {
     id: number
     nombre: string
     simbolo: string
     tipo: string
 }
 
-// ─── Ingrediente
 export interface Ingrediente {
     id: number
     nombre: string
@@ -29,7 +27,6 @@ export interface IngredienteUpdate {
     stock_cantidad?: number
 }
 
-// ─── Producto-Ingrediente (relación N:M con datos)
 export interface ProductoIngrediente {
     id: number                       
     nombre: string                   
@@ -38,14 +35,12 @@ export interface ProductoIngrediente {
     es_removible: boolean
 }
 
-// ─── Categoría simple
 export interface CategoriaSimple {
     id: number
     nombre: string
     es_principal: boolean
 }
 
-// ─── Producto
 export interface Producto {
     id: number
     nombre: string
@@ -62,7 +57,6 @@ export interface Producto {
     updated_at: string | null
 }
 
-// ─── Producto Create
 export interface CategoriaInput {
     id: number
     es_principal: boolean
@@ -87,7 +81,6 @@ export interface ProductoCreate {
     ingredientes_ids: number[]
 }
 
-// ─── Producto Update
 export interface ProductoUpdate {
     nombre?: string
     descripcion?: string
@@ -100,9 +93,7 @@ export interface ProductoUpdate {
     ingredientes_ids?: number[]
 }
 
-// ─── Cloudinary
 
-// Respuesta del endpoint POST /api/v1/uploads/imagen
 export interface CloudinaryResponse {
     secure_url: string
     public_id: string
@@ -112,7 +103,6 @@ export interface CloudinaryResponse {
     resource_type: string
 }
 
-// Body para PATCH /api/v1/productos/{id}/imagenes
 export interface ImagenProductoUpdate {
     imagenes_url: string[]
 }

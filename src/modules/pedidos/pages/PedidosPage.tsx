@@ -22,16 +22,13 @@ export function PedidosPage() {
   const isAdmin = hasRole(user, "ADMIN");
   const isPedidos = hasRole(user, "PEDIDOS");
 
-  // ─── Paginación ─────────────────────────────────────────────────────────
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
-  // ─── Filtros ────────────────────────────────────────────────────────────
   const [filtroEstado, setFiltroEstado] = useState<CodigoEstado | undefined>(
     undefined,
   );
 
-  // ─── Queries ────────────────────────────────────────────────────────────
   const {
     data: pedidosData,
     isLoading,
@@ -42,19 +39,16 @@ export function PedidosPage() {
     estado_codigo: filtroEstado,
   });
 
-  // ─── Estado del modal de cancelación ────────────────────────────────────
   const [pedidoACancelar, setPedidoACancelar] = useState<PedidoRead | null>(
     null,
   );
   const [canceladoEstadoId, setCanceladoEstadoId] = useState<number>(0);
 
-  // ─── Handler de filtro ──────────────────────────────────────────────────
   const handleFiltroEstado = (value: string) => {
     setFiltroEstado(value === "" ? undefined : (value as CodigoEstado));
-    setPage(1); // Reset a página 1 al cambiar filtro
+    setPage(1);
   };
 
-  // ─── Handler de cancelación ─────────────────────────────────────────────
   const handleCancelarClick = (pedido: PedidoRead, estadoId: number) => {
     setPedidoACancelar(pedido);
     setCanceladoEstadoId(estadoId);
@@ -65,7 +59,6 @@ export function PedidosPage() {
     setCanceladoEstadoId(0);
   };
 
-  // ─── Loading state ──────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -80,7 +73,6 @@ export function PedidosPage() {
     );
   }
 
-  // ─── Error state ────────────────────────────────────────────────────────
   if (isError) {
     return (
       <div className="space-y-6">
@@ -97,7 +89,6 @@ export function PedidosPage() {
     );
   }
 
-  // ─── Sin permisos ───────────────────────────────────────────────────────
   if (!isAdmin && !isPedidos) {
     return (
       <div className="space-y-6">
@@ -122,7 +113,6 @@ export function PedidosPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Pedidos</h1>
         <p className="text-sm text-slate-500">
@@ -130,9 +120,7 @@ export function PedidosPage() {
         </p>
       </div>
 
-      {/* Filtros */}
       <div className="flex flex-wrap gap-4 rounded-xl border border-slate-200 bg-white p-4">
-        {/* Filtro por estado */}
         <div className="min-w-[200px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">
             Estado
@@ -150,7 +138,6 @@ export function PedidosPage() {
           </select>
         </div>
 
-        {/* Contador de resultados */}
         <div className="flex items-end">
           <p className="text-sm text-slate-500">
             {totalItems} {totalItems === 1 ? "pedido" : "pedidos"} encontrados
@@ -158,7 +145,6 @@ export function PedidosPage() {
         </div>
       </div>
 
-      {/* Tabla o EmptyState */}
       {pedidos.length === 0 ? (
         <EmptyState
           icon="📋"
@@ -173,7 +159,6 @@ export function PedidosPage() {
         <>
           <PedidosTable data={pedidos} onCancelarClick={handleCancelarClick} />
 
-          {/* Paginación */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <p className="text-sm text-slate-500">
@@ -200,7 +185,6 @@ export function PedidosPage() {
         </>
       )}
 
-      {/* Modal de cancelación */}
       <CancelarModal
         pedido={pedidoACancelar}
         isOpen={pedidoACancelar !== null}

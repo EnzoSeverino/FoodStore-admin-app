@@ -9,8 +9,6 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { useState } from "react";
 import type { PedidoRead, CodigoEstado } from "@/types/pedido";
 
-// ─── Mapeo de estado → variante de Badge ────────────────────────────────────
-
 const estadoVariant: Record<
   CodigoEstado,
   "warning" | "info" | "success" | "danger"
@@ -40,11 +38,9 @@ export function PedidoDetallePage() {
   );
   const [canceladoEstadoId, setCanceladoEstadoId] = useState<number>(0);
 
-  // ─── Queries ────────────────────────────────────────────────────────────
   const { data: pedido, isLoading, isError } = usePedidoById(pedidoId);
   const { data: historial = [] } = useHistorialPedido(pedidoId);
 
-  // ─── Handler de cancelación ─────────────────────────────────────────────
   const handleCancelarClick = (pedido: PedidoRead, estadoId: number) => {
     setPedidoACancelar(pedido);
     setCanceladoEstadoId(estadoId);
@@ -55,7 +51,6 @@ export function PedidoDetallePage() {
     setCanceladoEstadoId(0);
   };
 
-  // ─── Loading state ──────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -86,7 +81,6 @@ export function PedidoDetallePage() {
     );
   }
 
-  // ─── Error state ────────────────────────────────────────────────────────
   if (isError || !pedido) {
     return (
       <div className="space-y-6">
@@ -114,7 +108,6 @@ export function PedidoDetallePage() {
 
   return (
     <div className="space-y-6">
-      {/* Header con botón volver */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
@@ -133,15 +126,11 @@ export function PedidoDetallePage() {
           </div>
         </div>
 
-        {/* Acciones de estado */}
         <EstadoActions pedido={pedido} onCancelarClick={handleCancelarClick} />
       </div>
 
-      {/* Grid de información */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Columna izquierda: Detalles del pedido */}
         <div className="space-y-6">
-          {/* Información general */}
           <div className="rounded-xl border border-slate-200 bg-white p-6">
             <h2 className="text-base font-semibold text-slate-900 mb-4">
               Información General
@@ -172,7 +161,6 @@ export function PedidoDetallePage() {
             </div>
           </div>
 
-          {/* Items del pedido */}
           <div className="rounded-xl border border-slate-200 bg-white p-6">
             <h2 className="text-base font-semibold text-slate-900 mb-4">
               Items del Pedido
@@ -205,7 +193,6 @@ export function PedidoDetallePage() {
             )}
           </div>
 
-          {/* Desglose de totales */}
           <div className="rounded-xl border border-slate-200 bg-white p-6">
             <h2 className="text-base font-semibold text-slate-900 mb-4">
               Desglose
@@ -241,9 +228,7 @@ export function PedidoDetallePage() {
           </div>
         </div>
 
-        {/* Columna derecha: Timeline e historial */}
         <div className="space-y-6">
-          {/* Timeline de estados */}
           <div className="rounded-xl border border-slate-200 bg-white p-6">
             <h2 className="text-base font-semibold text-slate-900 mb-4">
               Historial de Estados
@@ -253,7 +238,6 @@ export function PedidoDetallePage() {
         </div>
       </div>
 
-      {/* Modal de cancelación */}
       <CancelarModal
         pedido={pedidoACancelar}
         isOpen={pedidoACancelar !== null}

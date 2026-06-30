@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useAllCategorias } from "../hooks/useCategorias";
 import { ImageUploader } from "./ImageUploader";
 import type {
@@ -36,7 +36,6 @@ export function CategoriaModal({
 
   const { data: categorias = [] } = useAllCategorias();
 
-  // ─── Manejar submit ─────────────────────────────────────────────────────
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -50,7 +49,6 @@ export function CategoriaModal({
     onSubmit(data);
   };
 
-  // ─── Filtrar categoría actual del select de padre ───────────────────────
   const categoriasFiltradas = categorias.filter(
     (c) => c.id !== categoriaEditing?.id,
   );
@@ -65,7 +63,6 @@ export function CategoriaModal({
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Campo: Nombre */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Nombre
@@ -80,8 +77,6 @@ export function CategoriaModal({
               placeholder="Nombre de la categoría"
             />
           </div>
-
-          {/* Campo: Descripción */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Descripción
@@ -95,8 +90,6 @@ export function CategoriaModal({
               placeholder="Descripción opcional"
             />
           </div>
-
-          {/* Campo: Categoría Padre */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Categoría Padre
@@ -117,8 +110,6 @@ export function CategoriaModal({
               ))}
             </select>
           </div>
-
-          {/* Campo: Imagen (Cloudinary) */}
           <ImageUploader
             currentImageUrl={imagenUrl}
             currentPublicId={imagenPublicId}
@@ -132,8 +123,6 @@ export function CategoriaModal({
             }}
             disabled={isLoading}
           />
-
-          {/* Botones de acción */}
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"

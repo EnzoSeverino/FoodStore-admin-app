@@ -1,6 +1,5 @@
-import { useEffect, type ReactNode } from "react";
+﻿import { useEffect, type ReactNode } from "react";
 
-// ─── Modal genérico reutilizable ────────────────────────────────────────────
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -46,7 +45,6 @@ export function Modal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
-      // Click en el overlay (fuera del contenido) cierra el modal
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -54,7 +52,6 @@ export function Modal({
       <div
         className={`w-full ${maxWidth} rounded-xl bg-white shadow-xl animate-in fade-in zoom-in duration-200`}
       >
-        {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
           <h2 id="modal-title" className="text-lg font-bold text-slate-900">
             {title}
@@ -67,8 +64,6 @@ export function Modal({
             ✕
           </button>
         </div>
-
-        {/* Content */}
         <div className="px-6 py-4">{children}</div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import {
+﻿import {
   PieChart,
   Pie,
   Cell,
@@ -48,7 +48,6 @@ export function PedidosPorEstadoChart() {
     );
   }
 
-  // ─── Filtrar solo estados con pedidos ───────────────────────────────────
   const chartData = data
     .filter((item) => item.cantidad > 0)
     .map((item) => ({

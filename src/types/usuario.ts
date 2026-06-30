@@ -10,7 +10,6 @@ export interface Usuario {
   deleted_at: string | null
 }
 
-// Para crear usuario desde admin
 export interface UsuarioCreate {
   nombre: string
   email: string
@@ -18,7 +17,6 @@ export interface UsuarioCreate {
   rol: string
 }
 
-// Para actualizar usuario
 export interface UsuarioUpdate {
   nombre?: string
   email?: string

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import {
   useUsuarios,
   useCreateUsuario,
@@ -16,30 +16,24 @@ import type { Usuario, UsuarioCreate, UsuarioUpdate } from "@/types/usuario";
 export function UsuariosPage() {
   const toast = useToast();
 
-  // ─── Paginación ─────────────────────────────────────────────────────────
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
-  // ─── Queries ────────────────────────────────────────────────────────────
   const {
     data: usuariosData,
     isLoading,
     isError,
   } = useUsuarios(page, pageSize);
 
-  // ─── Mutations ──────────────────────────────────────────────────────────
   const createMutation = useCreateUsuario();
   const updateMutation = useUpdateUsuario();
   const deleteMutation = useDeleteUsuario();
 
-  // ─── Estado del modal ───────────────────────────────────────────────────
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usuarioEditing, setUsuarioEditing] = useState<Usuario | null>(null);
 
-  // ─── Estado del diálogo de confirmación ─────────────────────────────────
   const [usuarioToDelete, setUsuarioToDelete] = useState<number | null>(null);
 
-  // ─── Handlers del modal ─────────────────────────────────────────────────
   const handleOpenCreate = () => {
     setUsuarioEditing(null);
     setIsModalOpen(true);
@@ -55,7 +49,6 @@ export function UsuariosPage() {
     setUsuarioEditing(null);
   };
 
-  // ─── Submit del formulario (crear o actualizar) ────────────────────────
   const handleSubmit = async (data: UsuarioCreate | UsuarioUpdate) => {
     try {
       if (usuarioEditing) {
@@ -76,7 +69,6 @@ export function UsuariosPage() {
     }
   };
 
-  // ─── Handlers de eliminación ────────────────────────────────────────────
   const handleDeleteRequest = (id: number) => {
     setUsuarioToDelete(id);
   };
@@ -95,7 +87,6 @@ export function UsuariosPage() {
     }
   };
 
-  // ─── Loading state ──────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -110,7 +101,6 @@ export function UsuariosPage() {
     );
   }
 
-  // ─── Error state ────────────────────────────────────────────────────────
   if (isError) {
     return (
       <div className="space-y-6">
@@ -133,7 +123,6 @@ export function UsuariosPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Usuarios</h1>
@@ -148,8 +137,6 @@ export function UsuariosPage() {
           <span>+</span> Nuevo Usuario
         </button>
       </div>
-
-      {/* Tabla o EmptyState */}
       {usuarios.length === 0 ? (
         <EmptyState
           icon="👤"
@@ -165,8 +152,6 @@ export function UsuariosPage() {
             onEdit={handleOpenEdit}
             onDelete={handleDeleteRequest}
           />
-
-          {/* Paginación */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <p className="text-sm text-slate-500">
@@ -193,7 +178,6 @@ export function UsuariosPage() {
         </>
       )}
 
-      {/* Modal de crear/editar */}
       <UsuarioModal
         key={usuarioEditing?.id ?? "new"}
         isOpen={isModalOpen}
@@ -202,8 +186,6 @@ export function UsuariosPage() {
         usuarioEditing={usuarioEditing}
         isLoading={createMutation.isPending || updateMutation.isPending}
       />
-
-      {/* Diálogo de confirmación para eliminar */}
       <ConfirmDialog
         isOpen={usuarioToDelete !== null}
         onClose={() => setUsuarioToDelete(null)}

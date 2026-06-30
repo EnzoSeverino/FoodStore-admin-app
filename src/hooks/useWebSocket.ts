@@ -1,8 +1,7 @@
-import { useEffect, useRef, useCallback } from 'react'
+﻿import { useEffect, useRef, useCallback } from 'react'
 import { useWsStore } from '@/stores/wsStore'
 import { useAuthStore } from '@/stores/authStore'
 
-// ─── URL base del WebSocket 
 function getWsUrl(): string {
     const baseUrl = import.meta.env.VITE_API_BASE_URL as string
     const wsBase = baseUrl
@@ -11,7 +10,6 @@ function getWsUrl(): string {
     return `${wsBase}/ws/pedidos`
 }
 
-// ─── Tipo del mensaje que llega del servidor
 export interface WsMessage {
     event: string
     data: unknown
@@ -22,7 +20,6 @@ interface UseWebSocketOptions {
     enabled?: boolean
 }
 
-// ─── Hook useWebSocket 
 export function useWebSocket({
     onMessage,
     enabled = true,
@@ -35,7 +32,6 @@ export function useWebSocket({
         onMessageRef.current = onMessage
     }, [onMessage])
 
-    // Acciones del wsStore — se leen fuera del efecto para no crear dependencia
     const setStatus = useWsStore((s) => s.setStatus)
     const incrementRetry = useWsStore((s) => s.incrementRetry)
     const resetRetry = useWsStore((s) => s.resetRetry)
@@ -53,7 +49,6 @@ export function useWebSocket({
         let retryTimer: ReturnType<typeof setTimeout> | null = null
         let currentWs: WebSocket | null = null
 
-        // ─── closeCleanly 
         const closeCleanly = (ws: WebSocket) => {
             if (ws.readyState === WebSocket.CONNECTING) {
                 ws.addEventListener('open', () => ws.close(1000), { once: true })
@@ -62,7 +57,6 @@ export function useWebSocket({
             }
         }
 
-        // ─── connect 
         const connect = () => {
             if (cancelled) return
 
@@ -91,7 +85,6 @@ export function useWebSocket({
                     const msg = JSON.parse(event.data as string) as WsMessage
                     onMessageRef.current?.(msg)
                 } catch {
-                    // Ignorar mensajes malformados
                 }
             }
 
@@ -124,7 +117,6 @@ export function useWebSocket({
 
         connect()
 
-        // ─── Cleanup 
         return () => {
             cancelled = true
             if (retryTimer !== null) clearTimeout(retryTimer)
@@ -134,7 +126,6 @@ export function useWebSocket({
         }
     }, [enabled, accessToken, setStatus, incrementRetry, resetRetry, reset])
 
-    // ─── subscribeToOrder ───────────────────────────────────────────────────
     const subscribeToOrder = useCallback((orderId: number) => {
         if (wsRef.current?.readyState === WebSocket.OPEN) {
             wsRef.current.send(
@@ -143,7 +134,6 @@ export function useWebSocket({
         }
     }, [])
 
-    // ─── unsubscribeFromOrder ───────────────────────────────────────────────
     const unsubscribeFromOrder = useCallback((orderId: number) => {
         if (wsRef.current?.readyState === WebSocket.OPEN) {
             wsRef.current.send(

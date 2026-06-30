@@ -1,5 +1,4 @@
-// ─── Autenticación
-export interface LoginRequest {
+﻿export interface LoginRequest {
     email: string
     password: string
 }
@@ -19,14 +18,12 @@ export interface TokenResponse {
     usuario: UserPublic   
 }
 
-// Error estándar RFC 7807 que devuelve FastAPI
 export interface ApiError {
     detail: string
     code?: string
     field?: string
 }
 
-// Respuesta paginada genérica — se usa con cualquier entidad
 export interface PaginatedResponse<T> {
     items: T[]
     total: number

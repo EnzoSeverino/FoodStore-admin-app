@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -20,7 +20,6 @@ export function LoginPage() {
       await login(email, password)
       navigate('/dashboard')
     } catch {
-      // el error ya está en el store
     } finally {
       setIsLoading(false)
     }
@@ -28,12 +27,9 @@ export function LoginPage() {
 
   return (
     <div className="w-full overflow-hidden rounded-2xl shadow-lg">
-      {/* Banner superior */}
       <div className="flex items-center justify-center bg-slate-900 py-10">
         <h1 className="text-2xl font-bold text-white tracking-wide">FoodStore</h1>
       </div>
-
-      {/* Formulario */}
       <div className="bg-white px-8 py-8">
         <h2 className="mb-6 text-center text-xl font-bold text-slate-900">
           Inicio de Sesión

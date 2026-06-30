@@ -1,5 +1,4 @@
-// ─── ConfirmDialog ──────────────────────────────────────────────────────────
-interface ConfirmDialogProps {
+﻿interface ConfirmDialogProps {
     isOpen: boolean
     onClose: () => void
     onConfirm: () => void
@@ -11,14 +10,12 @@ interface ConfirmDialogProps {
     isLoading?: boolean
 }
 
-// Estilos del botón de confirmación según la variante
 const confirmStyles = {
     danger: 'bg-red-600 text-white hover:bg-red-700',
     warning: 'bg-yellow-600 text-white hover:bg-yellow-700',
     default: 'bg-slate-900 text-white hover:bg-slate-800',
 }
 
-// Icono según la variante
 const confirmIcons = {
     danger: '⚠',
     warning: '⚠',
@@ -48,7 +45,6 @@ export function ConfirmDialog({
             onClick={(e) => { if (e.target === e.currentTarget && !isLoading) onClose() }}
         >
             <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl">
-                {/* Icono + Título */}
                 <div>
                     <div className="flex items-center gap-3 mb-4">
                         <span className="text-2xl">{confirmIcons[variant]}</span>
@@ -59,16 +55,12 @@ export function ConfirmDialog({
                                 {title}
                         </h2>
                     </div>
-
-                    {/* Mensaje */}
                     <p
                         id="confirm-message"
                         className="mb-6 text-sm text-slate-600"
                     >
                         {message}
                     </p>
-
-                    {/* Botones */}
                     <div className="flex justify-end gap-2">
                         <button
                             onClick={onClose}

@@ -44,7 +44,6 @@ export function ProductosTable({
             </div>
           );
         }
-        // Soporta tanto strings como objetos {url, public_id}
         const urls: string[] = raw.map((item: any) =>
           typeof item === 'string' ? item : item?.url || item?.secure_url || ''
         ).filter(Boolean);

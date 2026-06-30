@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import {
   useCategorias,
@@ -25,11 +25,9 @@ export function CategoriasPage() {
   const isAdmin = hasRole(user, "ADMIN");
   const toast = useToast();
 
-  // ─── Paginación ─────────────────────────────────────────────────────────
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
-  // ─── Queries ────────────────────────────────────────────────────────────
   const {
     data: categoriasData,
     isLoading,
@@ -37,23 +35,19 @@ export function CategoriasPage() {
   } = useCategorias(page, pageSize);
   const { data: allCategorias = [] } = useAllCategorias();
 
-  // ─── Mutations ──────────────────────────────────────────────────────────
   const createMutation = useCreateCategoria();
   const updateMutation = useUpdateCategoria();
   const deleteMutation = useDeleteCategoria();
 
-  // ─── Estado del modal ───────────────────────────────────────────────────
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [categoriaEditing, setCategoriaEditing] = useState<Categoria | null>(
     null,
   );
 
-  // ─── Estado del diálogo de confirmación ─────────────────────────────────
   const [categoriaToDelete, setCategoriaToDelete] = useState<number | null>(
     null,
   );
 
-  // ─── Handlers del modal ─────────────────────────────────────────────────
   const handleOpenCreate = () => {
     setCategoriaEditing(null);
     setIsModalOpen(true);
@@ -69,7 +63,6 @@ export function CategoriasPage() {
     setCategoriaEditing(null);
   };
 
-  // ─── Submit del formulario (crear o actualizar) ────────────────────────
   const handleSubmit = async (data: CategoriaCreate | CategoriaUpdate) => {
     try {
       if (categoriaEditing) {
@@ -89,7 +82,6 @@ export function CategoriasPage() {
     }
   };
 
-  // ─── Handlers de eliminación ────────────────────────────────────────────
   const handleDeleteRequest = async (id: number) => {
     setCategoriaToDelete(id);
   };
@@ -110,7 +102,6 @@ export function CategoriasPage() {
     }
   };
 
-  // ─── Loading state ──────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -125,7 +116,6 @@ export function CategoriasPage() {
     );
   }
 
-  // ─── Error state ────────────────────────────────────────────────────────
   if (isError) {
     return (
       <div className="space-y-6">
@@ -148,7 +138,6 @@ export function CategoriasPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Categorías</h1>
@@ -165,8 +154,6 @@ export function CategoriasPage() {
           </button>
         )}
       </div>
-
-      {/* Tabla o EmptyState */}
       {categorias.length === 0 ? (
         <EmptyState
           icon="◫"
@@ -184,8 +171,6 @@ export function CategoriasPage() {
             onEdit={handleOpenEdit}
             onDelete={handleDeleteRequest}
           />
-
-          {/* Paginación */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <p className="text-sm text-slate-500">
@@ -212,7 +197,6 @@ export function CategoriasPage() {
         </>
       )}
 
-      {/* Modal de crear/editar */}
       <CategoriaModal
         key={categoriaEditing?.id ?? "new"}
         isOpen={isModalOpen}
@@ -221,8 +205,6 @@ export function CategoriasPage() {
         categoriaEditing={categoriaEditing}
         isLoading={createMutation.isPending || updateMutation.isPending}
       />
-
-      {/* Diálogo de confirmación para eliminar */}
       <ConfirmDialog
         isOpen={categoriaToDelete !== null}
         onClose={() => setCategoriaToDelete(null)}

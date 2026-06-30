@@ -1,4 +1,4 @@
-import apiClient from "./axiosInstance";
+﻿import apiClient from "./axiosInstance";
 import type { 
     Producto,
     ProductoCreate,
@@ -10,7 +10,6 @@ import type { PaginatedResponse } from "@/types/api";
 
 const PRODUCTOS = '/productos'
 
-// ─── GET /api/v1/productos
 export async function getProductos(params?: {
     page?: number
     size?: number
@@ -47,31 +46,26 @@ export async function getProductos(params?: {
     }
 }
 
-// ─── GET /api/v1/productos/all 
 export async function getAllProductos(): Promise<Producto[]> {
     const response = await apiClient.get<Producto[]>(`${PRODUCTOS}/all`)
     return response.data
 }
 
-// ─── GET /api/v1/productos/{id}
 export async function getProductoById(id: number): Promise<Producto> {
     const response = await apiClient.get<Producto>(`${PRODUCTOS}/${id}`)
     return response.data
 }
 
-// ─── POST /api/v1/productos
 export async function createProducto(data: ProductoCreate): Promise<Producto> {
     const response = await apiClient.post<Producto>(PRODUCTOS, data)
     return response.data
 }
 
-// ─── PUT /api/v1/productos/{id} 
 export async function updateProducto(id: number, data: ProductoUpdate): Promise<Producto> {
     const response = await apiClient.put<Producto>(`${PRODUCTOS}/${id}`, data)
     return response.data
 }
 
-// ─── PATCH /api/v1/productos/{id}/disponibilidad
 export async function updateDisponibilidad(id: number, disponible: boolean): Promise<Producto> {
     const response = await apiClient.patch<Producto>(
         `${PRODUCTOS}/${id}/disponibilidad`,
@@ -81,18 +75,15 @@ export async function updateDisponibilidad(id: number, disponible: boolean): Pro
     return response.data
 }
 
-// ─── PATCH /api/v1/productos/{id}/imagenes
 export async function updateImagenes(id: number, data: ImagenProductoUpdate): Promise<Producto> {
     const response = await apiClient.patch<Producto>(`${PRODUCTOS}/${id}/imagenes`, data)
     return response.data
 }
 
-// ─── DELETE /api/v1/productos/{id}
 export async function deleteProducto(id: number): Promise<void> {
     await apiClient.delete(`${PRODUCTOS}/${id}`)
 }
 
-// ─── GET /api/v1/productos/{id}/ingredientes
 export async function getIngredientesByProducto(productoId: number): Promise<Ingrediente[]> {
     const response = await apiClient.get<Ingrediente[]>(`${PRODUCTOS}/${productoId}/ingredientes`)
     return response.data

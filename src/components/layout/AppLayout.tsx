@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+﻿import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Tag,
@@ -65,9 +65,7 @@ export function AppLayout() {
 
   return (
     <div className="flex h-screen bg-slate-50">
-      {/* Sidebar */}
       <aside className="flex w-60 flex-col border-r border-slate-200 bg-white">
-        {/* Logo */}
         <div className="px-6 py-5 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900">
@@ -79,8 +77,6 @@ export function AppLayout() {
             {user?.rol ?? "Admin"}
           </p>
         </div>
-
-        {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5">
           {allNavItems
             .filter((item) =>
@@ -106,8 +102,6 @@ export function AppLayout() {
               );
             })}
         </nav>
-
-        {/* Footer */}
         <div className="border-t border-slate-100 p-4">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white text-xs font-bold shrink-0">
@@ -129,10 +123,7 @@ export function AppLayout() {
           </button>
         </div>
       </aside>
-
-      {/* Main */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Header */}
         <header className="flex h-14 items-center justify-end border-b border-slate-200 bg-white px-6">
           <div className="flex items-center gap-3">
             <WsConnectionBadge />
@@ -141,8 +132,6 @@ export function AppLayout() {
             </div>
           </div>
         </header>
-
-        {/* Content */}
         <main className="flex-1 overflow-y-auto p-8">
           <Outlet />
         </main>

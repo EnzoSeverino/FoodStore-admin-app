@@ -1,11 +1,9 @@
-import { useWsStore } from "@/stores/wsStore";
+﻿import { useWsStore } from "@/stores/wsStore";
 
-// ─── WsConnectionBadge ─────────────────────────────────────────────────────
 export function WsConnectionBadge() {
   const status = useWsStore((s) => s.status);
   const lastEvent = useWsStore((s) => s.lastEvent);
 
-  // ─── Configuración visual por estado ────────────────────────────────────
   const statusConfig = {
     connected: {
       dotColor: "bg-green-500",
@@ -39,7 +37,6 @@ export function WsConnectionBadge() {
 
   const config = statusConfig[status];
 
-  // ─── Calcular tiempo desde el último evento ─────────────────────────────
   const lastUpdateText = lastEvent
     ? `Última actualización: ${new Date(lastEvent.timestamp).toLocaleTimeString()}`
     : "Sin eventos recibidos";
@@ -59,7 +56,6 @@ export function WsConnectionBadge() {
           className={`relative inline-flex h-2.5 w-2.5 rounded-full ${config.dotColor}`}
         />
       </span>
-      {/* Texto FUERA del span del punto */}
       <span className={`text-xs font-medium ${config.textColor}`}>
         {config.label}
       </span>

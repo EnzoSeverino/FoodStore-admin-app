@@ -1,5 +1,4 @@
-// ─── Badge ──────────────────────────────────────────────────────────────────
-type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info'
+﻿type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info'
 
 interface BadgeProps {
     variant?: BadgeVariant
@@ -27,7 +26,6 @@ export function Badge({
     )
 }
 
-// ─── Helper: estado de pedido → variante de badge ───────────────────────────
 import type { CodigoEstado } from "@/types/pedido"
 
 // eslint-disable-next-line react-refresh/only-export-components

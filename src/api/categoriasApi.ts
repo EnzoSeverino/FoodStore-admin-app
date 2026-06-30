@@ -1,18 +1,14 @@
-import apiClient from "./axiosInstance";
+﻿import apiClient from "./axiosInstance";
 import type { Categoria, CategoriaCreate, CategoriaUpdate } from "@/types/categoria";
 import type { PaginatedResponse } from "@/types/api";
 
 const CATEGORIAS = '/categorias'
 
-// ─── GET /api/v1/categorias/all
-// Trae todas las categorías sin filtro, incluyendo hijas — usado como fuente
-// única de datos: getCategorias pagina sobre este mismo resultado.
 export async function getAllCategorias(): Promise<Categoria[]> {
     const response = await apiClient.get<Categoria[]>(`${CATEGORIAS}/all`)
     return response.data
 }
 
-// ─── GET /api/v1/categorias (paginado client-side)
 export async function getCategorias(
     page = 1,
     size = 20,
@@ -31,19 +27,16 @@ export async function getCategorias(
     }
 }
 
-// ─── POST /api/v1/categorias
 export async function createCategoria(data: CategoriaCreate): Promise<Categoria> {
     const response = await apiClient.post<Categoria>(CATEGORIAS, data)
     return response.data
 }
 
-// ─── PUT /api/v1/categorias/{id}
 export async function updateCategoria(id: number, data: CategoriaUpdate): Promise<Categoria> {
     const response = await apiClient.put<Categoria>(`${CATEGORIAS}/${id}`, data)
     return response.data
 }
 
-// ─── DELETE /api/v1/categorias/{id}
 export async function deleteCategoria(id: number): Promise<void> {
     await apiClient.delete(`${CATEGORIAS}/${id}`)
 }
