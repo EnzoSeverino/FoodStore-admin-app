@@ -25,17 +25,19 @@ export function StockTable({ data, onToggleDisponibilidad }: StockTableProps) {
     columnHelper.accessor("imagenes_url", {
       header: "Imagen",
       cell: (info) => {
-        const imagenes = info.getValue();
-        if (!imagenes || imagenes.length === 0) {
+        const raw = info.getValue() as any[];
+        if (!raw || raw.length === 0) {
           return (
             <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50">
               <span className="text-xs text-slate-400">—</span>
             </div>
           );
         }
+        const first = raw[0];
+        const url = typeof first === 'string' ? first : first?.url || first?.secure_url || '';
         return (
           <img
-            src={imagenes[0]}
+            src={url}
             alt="Producto"
             className="h-12 w-12 rounded-lg object-cover border border-slate-200"
           />

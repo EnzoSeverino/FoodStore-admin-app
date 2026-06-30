@@ -36,17 +36,21 @@ export function ProductosTable({
     columnHelper.accessor("imagenes_url", {
       header: "Imágenes",
       cell: (info) => {
-        const imagenes = info.getValue();
-        if (!imagenes || imagenes.length === 0) {
+        const raw = info.getValue() as any[];
+        if (!raw || raw.length === 0) {
           return (
             <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50">
               <span className="text-xs text-slate-400">—</span>
             </div>
           );
         }
+        // Soporta tanto strings como objetos {url, public_id}
+        const urls: string[] = raw.map((item: any) =>
+          typeof item === 'string' ? item : item?.url || item?.secure_url || ''
+        ).filter(Boolean);
         return (
           <div className="flex gap-1">
-            {imagenes.slice(0, 3).map((url, idx) => (
+            {urls.slice(0, 3).map((url, idx) => (
               <img
                 key={idx}
                 src={url}
@@ -54,9 +58,9 @@ export function ProductosTable({
                 className="h-12 w-12 rounded-lg object-cover border border-slate-200"
               />
             ))}
-            {imagenes.length > 3 && (
+            {urls.length > 3 && (
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-600">
-                +{imagenes.length - 3}
+                +{urls.length - 3}
               </div>
             )}
           </div>

@@ -40,9 +40,12 @@ export function ProductoModal({
   const [disponible, setDisponible] = useState(
     productoEditing?.disponible ?? true,
   );
-  const [imagenesUrl, setImagenesUrl] = useState<string[]>(
-    productoEditing?.imagenes_url ?? [],
-  );
+  const [imagenesUrl, setImagenesUrl] = useState<string[]>(() => {
+    const raw = productoEditing?.imagenes_url ?? [];
+    return raw.map((item: any) =>
+      typeof item === 'string' ? item : item?.url || item?.secure_url || ''
+    ).filter(Boolean);
+  });
   const [unidadVentaId, setUnidadVentaId] = useState<number | null>(
     productoEditing?.unidad_venta_id ?? null,
   );
